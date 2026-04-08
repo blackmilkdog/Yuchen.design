@@ -109,17 +109,27 @@ const takeaways = [
 /* ========== Page Component ========== */
 export default function NoviBoxCaseStudy() {
   return (
-    <main className="min-h-screen bg-white text-gray-900">
+    <main className="relative min-h-screen bg-bg text-white">
+      {/* Grain texture overlay */}
+      <div
+        className="pointer-events-none fixed inset-0 z-[1] opacity-[0.08]"
+        style={{ backgroundImage: "url(/images/grain-texture.png)" }}
+      />
+
       <CaseStudyNav />
 
       {/* --- Hero Header --- */}
-      <header className="border-b border-gray-200 px-8 lg:px-16">
+      <header className="relative overflow-hidden border-b border-white/[0.06] px-8 lg:px-16">
+        {/* Hero glow orbs */}
+        <div className="pointer-events-none absolute -left-40 top-20 h-[400px] w-[400px] rounded-full bg-accent/[0.08] blur-[120px]" />
+        <div className="pointer-events-none absolute -right-20 bottom-0 h-[300px] w-[300px] rounded-full bg-accent-secondary/[0.06] blur-[100px]" />
+
         <div className="mx-auto max-w-[1200px] pb-16 pt-20 lg:pt-28">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease }}
-            className="font-mono text-sm uppercase tracking-[0.15em] text-[#fa5c40]"
+            className="font-mono text-sm uppercase tracking-[0.15em] text-accent"
           >
             BonCamel &middot; E-Commerce Startup
           </motion.p>
@@ -128,7 +138,7 @@ export default function NoviBoxCaseStudy() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1, ease }}
-            className="mt-4 max-w-[800px] font-serif text-[48px] font-normal leading-[1.15] tracking-[-1.5px] text-gray-900 lg:text-[72px]"
+            className="mt-4 max-w-[800px] font-serif text-[48px] font-normal leading-[1.15] tracking-[-1.5px] text-white lg:text-[72px]"
           >
             Chat-based AI Shopping Agent
           </motion.h1>
@@ -137,7 +147,7 @@ export default function NoviBoxCaseStudy() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease }}
-            className="mt-6 max-w-[640px] font-sans text-lg leading-[1.7] text-gray-500 lg:text-xl"
+            className="mt-6 max-w-[640px] font-sans text-lg leading-[1.7] text-white/50 lg:text-xl"
           >
             Designing an end-to-end AI shopping flow &mdash; from intent capture
             to personalized recommendations to seamless checkout &mdash; for an
@@ -152,10 +162,10 @@ export default function NoviBoxCaseStudy() {
           >
             {meta.map((m) => (
               <div key={m.label}>
-                <p className="font-mono text-xs uppercase tracking-[0.15em] text-gray-300">
+                <p className="font-mono text-xs uppercase tracking-[0.15em] text-white/25">
                   {m.label}
                 </p>
-                <p className="mt-1 font-sans text-sm text-gray-600">
+                <p className="mt-1 font-sans text-sm text-white/50">
                   {m.value}
                 </p>
               </div>
@@ -165,7 +175,7 @@ export default function NoviBoxCaseStudy() {
       </header>
 
       {/* --- Impact Metrics --- */}
-      <section className="border-b border-gray-200 px-8 lg:px-16">
+      <section className="border-b border-white/[0.06] px-8 lg:px-16">
         <div className="mx-auto max-w-[1200px] py-16">
           <motion.div
             {...fadeUp}
@@ -174,12 +184,12 @@ export default function NoviBoxCaseStudy() {
             {metrics.map((m) => (
               <div
                 key={m.label}
-                className="rounded-2xl border border-gray-200 bg-gray-50 p-6 backdrop-blur-sm lg:p-8"
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm lg:p-8"
               >
-                <p className="font-serif text-[36px] leading-none tracking-[-1px] text-[#fa5c40] lg:text-[48px]">
+                <p className="font-serif text-[36px] leading-none tracking-[-1px] text-accent lg:text-[48px]">
                   {m.stat}
                 </p>
-                <p className="mt-3 font-sans text-sm leading-snug text-gray-500">
+                <p className="mt-3 font-sans text-sm leading-snug text-white/50">
                   {m.label}
                 </p>
               </div>
@@ -192,7 +202,7 @@ export default function NoviBoxCaseStudy() {
       {sections.map((s, i) => (
         <section
           key={s.num}
-          className="border-b border-gray-200 px-8 lg:px-16"
+          className="border-b border-white/[0.06] px-8 lg:px-16"
         >
           <div className="mx-auto max-w-[1200px] py-16 lg:py-24">
             <motion.div
@@ -203,12 +213,12 @@ export default function NoviBoxCaseStudy() {
             >
               <div className="flex items-start gap-6 lg:gap-12">
                 {/* Section number */}
-                <span className="hidden shrink-0 font-mono text-[80px] leading-none text-gray-200 lg:block lg:text-[120px]">
+                <span className="hidden shrink-0 font-mono text-[80px] leading-none text-white/[0.06] lg:block lg:text-[120px]">
                   {s.num}
                 </span>
 
                 <div className="flex-1">
-                  <h2 className="font-serif text-[32px] font-normal leading-[1.2] tracking-[-0.5px] text-gray-900 lg:text-[42px]">
+                  <h2 className="font-serif text-[32px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
                     {s.title}
                   </h2>
 
@@ -216,7 +226,7 @@ export default function NoviBoxCaseStudy() {
                     {s.body.split("\n\n").map((paragraph, pi) => (
                       <p
                         key={pi}
-                        className="max-w-[680px] font-sans text-[17px] leading-[1.8] text-gray-500 lg:text-[18px]"
+                        className="max-w-[680px] font-sans text-[17px] leading-[1.8] text-white/50 lg:text-[18px]"
                       >
                         {paragraph}
                       </p>
@@ -230,7 +240,7 @@ export default function NoviBoxCaseStudy() {
       ))}
 
       {/* --- Design Principles --- */}
-      <section className="border-b border-gray-200 px-8 lg:px-16">
+      <section className="border-b border-white/[0.06] px-8 lg:px-16">
         <div className="mx-auto max-w-[1200px] py-16 lg:py-24">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -238,10 +248,10 @@ export default function NoviBoxCaseStudy() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, ease }}
           >
-            <p className="font-mono text-sm uppercase tracking-[0.15em] text-[#fa8e41]">
+            <p className="font-mono text-sm uppercase tracking-[0.15em] text-accent-secondary">
               Guiding Principles
             </p>
-            <h2 className="mt-4 font-serif text-[32px] font-normal leading-[1.2] tracking-[-0.5px] text-gray-900 lg:text-[42px]">
+            <h2 className="mt-4 font-serif text-[32px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
               Design Philosophy
             </h2>
           </motion.div>
@@ -254,17 +264,17 @@ export default function NoviBoxCaseStudy() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease }}
-                className="rounded-2xl border border-gray-200 bg-gray-50/80 p-8 lg:p-10"
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-sm lg:p-10"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-[#fa5c40]/30 bg-[#fa5c40]/10">
-                  <span className="font-mono text-sm text-[#fa5c40]">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-accent/20 bg-accent/10">
+                  <span className="font-mono text-sm text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="font-serif text-xl leading-snug text-gray-900">
+                <h3 className="font-serif text-xl leading-snug text-white">
                   {p.title}
                 </h3>
-                <p className="mt-3 font-sans text-[15px] leading-[1.7] text-gray-500">
+                <p className="mt-3 font-sans text-[15px] leading-[1.7] text-white/50">
                   {p.description}
                 </p>
               </motion.div>
@@ -281,22 +291,22 @@ export default function NoviBoxCaseStudy() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, ease }}
-            className="relative overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-[#fa5c40]/5 via-gray-50 to-[#fa8e41]/5 p-10 lg:p-16"
+            className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-accent/[0.06] via-white/[0.02] to-accent-secondary/[0.04] p-10 backdrop-blur-sm lg:p-16"
           >
             {/* Decorative glow */}
-            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#fa5c40]/10 blur-[100px]" />
-            <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#fa8e41]/10 blur-[100px]" />
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/[0.12] blur-[100px]" />
+            <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-accent-secondary/[0.08] blur-[100px]" />
 
-            <p className="relative font-mono text-sm uppercase tracking-[0.15em] text-[#fa5c40]">
+            <p className="relative font-mono text-sm uppercase tracking-[0.15em] text-accent">
               Key Insight
             </p>
-            <p className="relative mt-6 max-w-[720px] font-serif text-[24px] leading-[1.5] tracking-[-0.5px] text-gray-900 lg:text-[32px]">
+            <p className="relative mt-6 max-w-[720px] font-serif text-[24px] leading-[1.5] tracking-[-0.5px] text-white lg:text-[32px]">
               &ldquo;69% of testers preferred Version A, which reduced misclick
               rates by 24%. Meanwhile, an 82.5% checkout drop-off exposed that
               missing direct purchase buttons was the single largest conversion
               blocker.&rdquo;
             </p>
-            <p className="relative mt-4 font-sans text-sm text-gray-400">
+            <p className="relative mt-4 font-sans text-sm text-white/40">
               &mdash; A/B Testing Results, NoviBox AI Assistant
             </p>
           </motion.div>
@@ -304,7 +314,7 @@ export default function NoviBoxCaseStudy() {
       </section>
 
       {/* --- Takeaways --- */}
-      <section className="border-t border-gray-200 px-8 lg:px-16">
+      <section className="border-t border-white/[0.06] px-8 lg:px-16">
         <div className="mx-auto max-w-[1200px] py-16 lg:py-24">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -312,10 +322,10 @@ export default function NoviBoxCaseStudy() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, ease }}
           >
-            <p className="font-mono text-sm uppercase tracking-[0.15em] text-[#fa8e41]">
+            <p className="font-mono text-sm uppercase tracking-[0.15em] text-accent-secondary">
               Reflections
             </p>
-            <h2 className="mt-4 font-serif text-[32px] font-normal leading-[1.2] tracking-[-0.5px] text-gray-900 lg:text-[42px]">
+            <h2 className="mt-4 font-serif text-[32px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
               Takeaways
             </h2>
           </motion.div>
@@ -328,16 +338,16 @@ export default function NoviBoxCaseStudy() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease }}
-                className="flex gap-6 border-l-2 border-[#fa5c40]/40 py-2 pl-8 lg:gap-12"
+                className="flex gap-6 border-l-2 border-accent/30 py-2 pl-8 lg:gap-12"
               >
-                <span className="hidden shrink-0 font-mono text-[48px] leading-none text-gray-200 lg:block">
+                <span className="hidden shrink-0 font-mono text-[48px] leading-none text-white/[0.06] lg:block">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <h3 className="font-serif text-xl leading-snug text-gray-900 lg:text-2xl">
+                  <h3 className="font-serif text-xl leading-snug text-white lg:text-2xl">
                     {t.title}
                   </h3>
-                  <p className="mt-3 max-w-[600px] font-sans text-[16px] leading-[1.7] text-gray-500">
+                  <p className="mt-3 max-w-[600px] font-sans text-[16px] leading-[1.7] text-white/50">
                     {t.body}
                   </p>
                 </div>

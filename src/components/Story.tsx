@@ -136,12 +136,10 @@ export default function Story() {
                 I&apos;m after, not loud, just real.
               </p>
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px] sm:rounded-[36px]">
-                <Image
+                <img
                   src="/images/surfing.jpg"
                   alt="Surfing"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 600px"
+                  className="h-full w-full object-cover"
                 />
               </div>
               {/* Hobbies – mobile only, below image */}
@@ -175,7 +173,7 @@ export default function Story() {
             </div>
 
             {/* Hobbies – desktop only, centered to image */}
-            <div className="hidden lg:flex lg:flex-col lg:gap-2 lg:mb-[100px]">
+            <div className="hidden lg:flex lg:flex-col lg:gap-2">
               {["Snowboarding", "Surfing", "Traveling", "City Walking", "Space Aesthetics"].map((hobby) => (
                 <span key={hobby} className="inline-flex items-center gap-1.5 px-0 py-0 font-sans text-[16px] leading-[1.6] tracking-[-0.16px] text-white/40">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 lg:h-[18px] lg:w-[18px]">

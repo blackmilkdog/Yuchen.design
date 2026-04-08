@@ -84,7 +84,7 @@ const projects: Project[] = [
     company: "DiDi . Mobility Platform",
     title: "Autonomous Trucking",
     date: "05/2024 - 07/2024",
-    image: "/images/didi.png",
+    image: "/images/phillytruce.png",
     description:
       "Designed fleet ops + HMI interactions for autonomous trucking \u2014 mapping dispatch-to-execution workflows and defining risk-aware UI patterns for safety-critical scenarios. Built prototypes and simulations to validate faster, and shipped iterative improvements with engineering in a tight build\u2013test loop.",
     tags: [
@@ -94,14 +94,14 @@ const projects: Project[] = [
       "Edge-Case Design",
       "Prototype \u2192 Ship",
     ],
-    tagGradient: "linear-gradient(135deg, #dbeafe, #ffffff)",
+    tagGradient: "linear-gradient(135deg, #dcfce7, #ffffff)",
     link: "/didi",
   },
   {
     company: "Philly Truce . NGO of Community Safety",
     title: "Case Response Platform",
     date: "11/2023 - 01/2024",
-    image: "/images/phillytruce.png",
+    image: "/images/didi.png",
     description:
       "Built a high-trust case response platform for rapid incident intake and triage \u2014 turning SMS reports into trackable cases with status, ownership, and resolution workflows.",
     tags: [
@@ -111,7 +111,7 @@ const projects: Project[] = [
       "Scope & Prioritization",
       "Cross-functional Collaboration",
     ],
-    tagGradient: "linear-gradient(135deg, #dcfce7, #ffffff)",
+    tagGradient: "linear-gradient(135deg, #dbeafe, #ffffff)",
     link: "#",
   },
 ];

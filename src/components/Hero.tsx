@@ -1,25 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Starfield from "./Starfield";
+import dynamic from "next/dynamic";
+
+const TextSnake3D = dynamic(() => import("./TextSnake3D"), { ssr: false });
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const words = ["I build clear systems", "and polished experiences,", "turning complexity into", "simple, shippable flows."];
 
-const floatingSkills = [
-  { label: "B2B Payment System", radius: "29vw", angle: 0, bounceDelay: 0 },
-  { label: "Design Systems at Scale", radius: "32vw", angle: 60, bounceDelay: 0.8 },
-  { label: "High-Trust UX (Risk & Clarity)", radius: "30vw", angle: 120, bounceDelay: 1.2 },
-  { label: "Workflow Simplification", radius: "31vw", angle: 180, bounceDelay: 0.4 },
-  { label: "Feedback-to-Release Loop", radius: "28vw", angle: 240, bounceDelay: 1.6 },
-  { label: "AI-first Prototyping", radius: "30vw", angle: 300, bounceDelay: 0.2 },
-];
-
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [orbitRotation, setOrbitRotation] = useState(0);
 
   // Mouse-reactive glow
   useEffect(() => {
@@ -34,32 +27,6 @@ export default function Hero() {
     return () => section.removeEventListener("mousemove", handleMove);
   }, []);
 
-  // Scroll-velocity driven orbit rotation
-  useEffect(() => {
-    let lastScroll = window.scrollY;
-    let rotation = 0;
-    let velocity = 0;
-    let raf: number;
-
-    const BASE_SPEED = 0.04; // degrees per frame (~2.4°/s at 60fps)
-
-    const tick = () => {
-      const currentScroll = window.scrollY;
-      const delta = currentScroll - lastScroll;
-      lastScroll = currentScroll;
-
-      // Scroll boosts velocity
-      velocity += delta * 0.02;
-      velocity *= 0.96;
-
-      rotation += BASE_SPEED + velocity;
-      setOrbitRotation(rotation);
-      raf = requestAnimationFrame(tick);
-    };
-
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
 
   return (
     <section
@@ -146,39 +113,10 @@ export default function Hero() {
           }}
         />
 
-        {/* Orbiting skill pills — scroll-velocity driven */}
-        <div
-          className="absolute left-1/2 top-1/2 z-10"
-          style={{
-            transform: `rotate(${orbitRotation}deg)`,
-            willChange: "transform",
-          }}
-        >
-          {floatingSkills.map((skill) => (
-            <motion.div
-              key={skill.label}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 2.4 + skill.bounceDelay, ease }}
-              style={{
-                position: "absolute",
-                transformOrigin: "0 0",
-                transform: `rotate(${skill.angle}deg)`,
-              }}
-            >
-              <div style={{ transform: `translateX(${skill.radius})` }}>
-                <div style={{ transform: `rotate(${-skill.angle - orbitRotation}deg)` }}>
-                  <span
-                    className="animate-float-pill inline-block whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-satoshi text-[12px] tracking-[-0.1px] text-white/60 backdrop-blur-md"
-                  >
-                    {skill.label}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </motion.div>
+
+      {/* 3D Text Snake orbiting the sun */}
+      <TextSnake3D />
 
       {/* Main content — centered */}
       <div className="relative z-[3] flex w-full max-w-[650px] flex-col items-start text-left">
