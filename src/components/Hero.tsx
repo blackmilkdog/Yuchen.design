@@ -198,12 +198,20 @@ export default function Hero() {
         </motion.div>
       </div>
 
+      {/* Bottom fade to black */}
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 right-0 z-[10] h-[200px]"
+        style={{
+          background: "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,1) 100%)",
+        }}
+      />
+
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 3.8 }}
-        className="absolute bottom-8 left-1/2 z-[3] -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 z-[11] -translate-x-1/2"
       >
         <a href="#works" className="flex flex-col items-center gap-2">
           <span className="font-satoshi text-[11px] uppercase tracking-[0.15em] text-white/25">

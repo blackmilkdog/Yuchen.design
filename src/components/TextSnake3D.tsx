@@ -86,7 +86,7 @@ export default function TextSnake3D() {
           const el = els[i];
           if (!el) continue;
 
-          const t = (i + stripe.offset) * charSpacing - spread / 2 + ((timeOffset + scrollOffset) % spread);
+          const t = i * charSpacing - spread / 2 + ((timeOffset + scrollOffset + stripe.offset * charSpacing) % spread);
           const wrapped = ((t % spread) + spread * 1.5) % spread - spread / 2;
 
           const progress = 1 - (wrapped + spread / 2) / spread;
