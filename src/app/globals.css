@@ -196,16 +196,3 @@ a {
 }
 .animate-float-pill { animation: float-pill 4s ease-in-out infinite; }
 
-@keyframes orbit-swing {
-  0% { transform: rotate(20deg); }
-  90% { transform: rotate(160deg); }
-  90.001% { transform: rotate(20deg); }
-  100% { transform: rotate(20deg); }
-}
-
-@keyframes orbit-swing-counter {
-  0% { transform: rotate(-20deg); }
-  90% { transform: rotate(-160deg); }
-  90.001% { transform: rotate(-20deg); }
-  100% { transform: rotate(-20deg); }
-}

@@ -135,7 +135,7 @@ export default function Story() {
                 messy parts of go-to-market. That&apos;s the kind of impact
                 I&apos;m after, not loud, just real.
               </p>
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[20px] sm:rounded-[36px]">
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px] sm:rounded-[36px]">
                 <Image
                   src="/images/surfing.jpg"
                   alt="Surfing"

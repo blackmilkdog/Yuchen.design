@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Starfield from "./Starfield";
 
@@ -9,15 +9,17 @@ const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const words = ["I build clear systems", "and polished experiences,", "turning complexity into", "simple, shippable flows."];
 
 const floatingSkills = [
-  { label: "Product Design", radius: 380, duration: 18, startDelay: 0, bounceDelay: 0 },
-  { label: "Design Systems", radius: 420, duration: 22, startDelay: -8, bounceDelay: 0.8 },
-  { label: "Prototyping", radius: 390, duration: 16, startDelay: -5, bounceDelay: 1.2 },
-  { label: "User Research", radius: 410, duration: 20, startDelay: -12, bounceDelay: 0.4 },
-  { label: "AI-first UX", radius: 370, duration: 24, startDelay: -15, bounceDelay: 1.6 },
+  { label: "B2B Payment System", radius: "29vw", angle: 0, bounceDelay: 0 },
+  { label: "Design Systems at Scale", radius: "32vw", angle: 60, bounceDelay: 0.8 },
+  { label: "High-Trust UX (Risk & Clarity)", radius: "30vw", angle: 120, bounceDelay: 1.2 },
+  { label: "Workflow Simplification", radius: "31vw", angle: 180, bounceDelay: 0.4 },
+  { label: "Feedback-to-Release Loop", radius: "28vw", angle: 240, bounceDelay: 1.6 },
+  { label: "AI-first Prototyping", radius: "30vw", angle: 300, bounceDelay: 0.2 },
 ];
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [orbitRotation, setOrbitRotation] = useState(0);
 
   // Mouse-reactive glow
   useEffect(() => {
@@ -30,6 +32,33 @@ export default function Hero() {
     };
     section.addEventListener("mousemove", handleMove);
     return () => section.removeEventListener("mousemove", handleMove);
+  }, []);
+
+  // Scroll-velocity driven orbit rotation
+  useEffect(() => {
+    let lastScroll = window.scrollY;
+    let rotation = 0;
+    let velocity = 0;
+    let raf: number;
+
+    const BASE_SPEED = 0.04; // degrees per frame (~2.4°/s at 60fps)
+
+    const tick = () => {
+      const currentScroll = window.scrollY;
+      const delta = currentScroll - lastScroll;
+      lastScroll = currentScroll;
+
+      // Scroll boosts velocity
+      velocity += delta * 0.02;
+      velocity *= 0.96;
+
+      rotation += BASE_SPEED + velocity;
+      setOrbitRotation(rotation);
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   return (
@@ -74,24 +103,39 @@ export default function Hero() {
       />
 
       {/* Sun — half-visible at top */}
+      {/* Phase 1: Sun descends from above (0s – 1.4s) */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, delay: 0.4, ease }}
-        className="absolute left-1/2 top-0 z-[6] -translate-x-1/2 -translate-y-3/4"
+        initial={{ opacity: 0, y: "-40%" }}
+        animate={{ opacity: 1, y: "0%" }}
+        transition={{ duration: 1.4, delay: 0.2, ease }}
+        className="absolute left-1/2 top-0 z-[2] -translate-x-1/2 -translate-y-3/4"
         style={{ width: "50vw", height: "50vw" }}
       >
-        {/* Pulsing warm glow */}
-        <div className="absolute -inset-[25%] animate-sun-glow-pulse rounded-full opacity-70 blur-[100px]" style={{
-          background: "radial-gradient(circle, #ffcc00 0%, #ff8c42 40%, transparent 65%)",
-        }} />
-        <div className="absolute -inset-[15%] animate-sun-glow-pulse rounded-full opacity-50 blur-[70px]" style={{
-          background: "radial-gradient(circle, #ffe066 0%, #ffcc00 40%, transparent 65%)",
-          animationDelay: "-3s",
-        }} />
-        <div className="absolute -inset-[5%] rounded-full opacity-60 blur-[40px]" style={{
-          background: "radial-gradient(circle, #ffd633 0%, #ff8c42 30%, transparent 70%)",
-        }} />
+        {/* Phase 2: Glow expands after sun arrives (1.0s – 2.2s) */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.3 }}
+          animate={{ opacity: 0.7, scale: 1 }}
+          transition={{ duration: 1.2, delay: 1.0, ease }}
+          className="absolute -inset-[25%] animate-sun-glow-pulse rounded-full blur-[100px]"
+          style={{ background: "radial-gradient(circle, #ffcc00 0%, #ff8c42 40%, transparent 65%)" }}
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.3 }}
+          animate={{ opacity: 0.5, scale: 1 }}
+          transition={{ duration: 1.2, delay: 1.2, ease }}
+          className="absolute -inset-[15%] animate-sun-glow-pulse rounded-full blur-[70px]"
+          style={{
+            background: "radial-gradient(circle, #ffe066 0%, #ffcc00 40%, transparent 65%)",
+            animationDelay: "-3s",
+          }}
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.3 }}
+          animate={{ opacity: 0.6, scale: 1 }}
+          transition={{ duration: 1.0, delay: 1.4, ease }}
+          className="absolute -inset-[5%] rounded-full blur-[40px]"
+          style={{ background: "radial-gradient(circle, #ffd633 0%, #ff8c42 30%, transparent 70%)" }}
+        />
 
         {/* Sun circle */}
         <div
@@ -102,48 +146,47 @@ export default function Hero() {
           }}
         />
 
-        {/* Orbiting skill pills */}
-        {floatingSkills.map((skill) => (
-          <motion.div
-            key={skill.label}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.0 + skill.bounceDelay, ease }}
-            className="absolute left-1/2 top-1/2 z-10"
-          >
-            <div
+        {/* Orbiting skill pills — scroll-velocity driven */}
+        <div
+          className="absolute left-1/2 top-1/2 z-10"
+          style={{
+            transform: `rotate(${orbitRotation}deg)`,
+            willChange: "transform",
+          }}
+        >
+          {floatingSkills.map((skill) => (
+            <motion.div
+              key={skill.label}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 2.4 + skill.bounceDelay, ease }}
               style={{
+                position: "absolute",
                 transformOrigin: "0 0",
-                animation: `orbit-swing ${skill.duration}s ease-in-out infinite`,
-                animationDelay: `${skill.startDelay}s`,
+                transform: `rotate(${skill.angle}deg)`,
               }}
             >
-              <div style={{ transform: `translateX(${skill.radius}px)` }}>
-                <div
-                  style={{
-                    animation: `orbit-swing-counter ${skill.duration}s ease-in-out infinite`,
-                    animationDelay: `${skill.startDelay}s`,
-                  }}
-                >
+              <div style={{ transform: `translateX(${skill.radius})` }}>
+                <div style={{ transform: `rotate(${-skill.angle - orbitRotation}deg)` }}>
                   <span
                     className="animate-float-pill inline-block whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-satoshi text-[12px] tracking-[-0.1px] text-white/60 backdrop-blur-md"
-                    style={{ animationDelay: `${skill.bounceDelay}s` }}
                   >
                     {skill.label}
                   </span>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </div>
       </motion.div>
 
       {/* Main content — centered */}
       <div className="relative z-[3] flex w-full max-w-[650px] flex-col items-start text-left">
+        {/* Phase 3: Text animations after sun + glow (2.0s+) */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease }}
+          transition={{ duration: 0.6, delay: 2.0, ease }}
           className="font-mono text-[13px] uppercase tracking-[0.2em] text-accent/80 sm:text-[14px]"
         >
           Product Designer
@@ -152,7 +195,7 @@ export default function Hero() {
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15, ease }}
+          transition={{ duration: 0.8, delay: 2.15, ease }}
           className="mt-6 font-serif text-[42px] leading-[1.15] font-normal tracking-[-1.5px] text-white sm:text-[56px] lg:text-[68px]"
         >
           Hi, I&apos;m{" "}
@@ -163,7 +206,7 @@ export default function Hero() {
             <motion.span
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, delay: 0.8, ease }}
+              transition={{ duration: 0.8, delay: 2.8, ease }}
               className="absolute -bottom-1 left-0 h-[3px] w-full origin-left rounded-full bg-gradient-to-r from-accent to-[#ffb366]"
             />
           </span>
@@ -176,7 +219,7 @@ export default function Hero() {
               key={i}
               initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.6, delay: 0.4 + i * 0.12, ease }}
+              transition={{ duration: 0.6, delay: 2.4 + i * 0.12, ease }}
               className="font-satoshi text-[20px] leading-[1.6] tracking-[-0.3px] text-white/70 sm:text-[24px] lg:text-[28px]"
             >
               {word}
@@ -187,7 +230,7 @@ export default function Hero() {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.0, ease }}
+          transition={{ duration: 0.8, delay: 3.0, ease }}
           className="mt-6 font-satoshi text-[16px] leading-[1.4] tracking-[-0.3px] text-white/40 sm:text-[18px]"
         >
           @ CodePay &middot; NYC &middot; Open to opportunities
@@ -197,26 +240,23 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.2, ease }}
+          transition={{ duration: 0.6, delay: 3.2, ease }}
           className="mt-10 flex items-center gap-4"
         >
-          <a
-            href="#works"
+          <button
+            onClick={() => {
+              const worksSection = document.getElementById("works");
+              if (worksSection) {
+                worksSection.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
             className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-accent px-6 py-3 font-satoshi text-[15px] font-medium text-black transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,140,66,0.3)]"
           >
             View Work
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-y-0.5">
               <path d="M12 5v14M5 12l7 7 7-7" />
             </svg>
-          </a>
-          <a
-            href="mailto:yuchen666333@gmail.com"
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 font-satoshi text-[15px] text-white/70 backdrop-blur-sm transition-all duration-300 hover:border-white/30 hover:text-white"
-            onMouseEnter={() => window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: true }))}
-            onMouseLeave={() => window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: false }))}
-          >
-            Get in Touch
-          </a>
+          </button>
         </motion.div>
       </div>
 
@@ -224,7 +264,7 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.8 }}
+        transition={{ duration: 0.8, delay: 3.8 }}
         className="absolute bottom-8 left-1/2 z-[3] -translate-x-1/2"
       >
         <a href="#works" className="flex flex-col items-center gap-2">

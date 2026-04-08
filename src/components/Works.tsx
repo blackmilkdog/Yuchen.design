@@ -15,6 +15,7 @@ interface Project {
   description: string;
   tags: string[];
   link: string;
+  tagGradient: string;
 }
 
 const tagIcons: Record<string, React.ReactNode> = {
@@ -59,6 +60,7 @@ const projects: Project[] = [
       "Feedback-to-Release Loop",
       "AI-first Prototyping",
     ],
+    tagGradient: "linear-gradient(135deg, #dbeafe, #ffffff)",
     link: "/codepay",
   },
   {
@@ -75,6 +77,7 @@ const projects: Project[] = [
       "Hi-Fi Prototyping",
       "Interaction Design",
     ],
+    tagGradient: "linear-gradient(135deg, #ede9fe, #ffffff)",
     link: "/novibox",
   },
   {
@@ -91,6 +94,7 @@ const projects: Project[] = [
       "Edge-Case Design",
       "Prototype \u2192 Ship",
     ],
+    tagGradient: "linear-gradient(135deg, #dbeafe, #ffffff)",
     link: "/didi",
   },
   {
@@ -107,6 +111,7 @@ const projects: Project[] = [
       "Scope & Prioritization",
       "Cross-functional Collaboration",
     ],
+    tagGradient: "linear-gradient(135deg, #dcfce7, #ffffff)",
     link: "#",
   },
 ];
@@ -139,7 +144,7 @@ function Perspective3DImage({ src, alt, imageFirst }: { src: string; alt: string
   );
 }
 
-function ParallaxTags({ tags, imageFirst }: { tags: string[]; imageFirst: boolean }) {
+function ParallaxTags({ tags, imageFirst, gradient }: { tags: string[]; imageFirst: boolean; gradient: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -152,12 +157,12 @@ function ParallaxTags({ tags, imageFirst }: { tags: string[]; imageFirst: boolea
   return (
     <motion.div
       ref={ref}
-      style={{ y, rotateY, rotate, perspective: 800 }}
+      style={{ y, rotateY, rotate, perspective: 800, background: gradient }}
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: 0.3, ease }}
-      className={`absolute bottom-0 z-20 flex translate-y-[12.5%] flex-col gap-2.5 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-[20px] sm:px-6 sm:py-5 ${
+      className={`absolute bottom-0 z-20 flex translate-y-[12.5%] flex-col gap-2.5 rounded-2xl px-5 py-4 shadow-lg sm:px-6 sm:py-5 ${
         imageFirst ? "right-0 translate-x-[12.5%]" : "left-0 -translate-x-[12.5%]"
       }`}
     >
@@ -204,7 +209,7 @@ export default function Works() {
                 {/* Image with tag list */}
                 <div className="relative lg:w-[55%] lg:flex-shrink-0" style={{ perspective: 800 }}>
                   <Perspective3DImage src={project.image} alt={project.title} imageFirst={imageFirst} />
-                  <ParallaxTags tags={project.tags} imageFirst={imageFirst} />
+                  <ParallaxTags tags={project.tags} imageFirst={imageFirst} gradient={project.tagGradient} />
                 </div>
 
                 {/* Text content */}
