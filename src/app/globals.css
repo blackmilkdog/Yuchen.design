@@ -174,3 +174,22 @@ a {
 .animate-orb-drift-2 { animation: orb-drift-2 25s ease-in-out infinite; }
 .animate-orb-drift-3 { animation: orb-drift-3 18s ease-in-out infinite; }
 .animate-orb-drift-4 { animation: orb-drift-4 22s ease-in-out infinite; }
+
+/* Aurora spin for portrait halo */
+@keyframes aurora-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes aurora-spin-reverse {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+.animate-aurora-spin { animation: aurora-spin 12s linear infinite; }
+.animate-aurora-spin-reverse { animation: aurora-spin-reverse 16s linear infinite; }
+
+/* Floating skill pills */
+@keyframes float-pill {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-8px); }
+}
+.animate-float-pill { animation: float-pill 4s ease-in-out infinite; }
