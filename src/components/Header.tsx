@@ -23,7 +23,7 @@ export default function Header() {
         transition={{ duration: 0.6, ease, delay: 0.2 }}
         className="relative flex items-center justify-between px-6 py-5 sm:px-10 lg:px-14"
       >
-        <a href="#" className="flex items-center gap-2 font-serif text-[22px] tracking-[-0.5px] text-white sm:text-[26px]">
+        <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="flex items-center gap-2 font-serif text-[22px] tracking-[-0.5px] text-white sm:text-[26px]">
           Yuchen Zhang
           <svg
             width="16"

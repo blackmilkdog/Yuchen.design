@@ -17,6 +17,8 @@ export default function BlobCursor() {
   const stateRef = useRef<BlobState>({ mode: "dot", rect: null, borderRadius: "" });
   const morphRef = useRef({ x: 0, y: 0, w: 8, h: 8, r: 9999, opacity: 1 });
   const targetMorphRef = useRef({ x: 0, y: 0, w: 8, h: 8, r: 9999, opacity: 1 });
+  const inPlaygroundRef = useRef(false);
+  const colorRef = useRef(0); // 0 = orange, 1 = white
 
   const detectMode = useCallback((target: HTMLElement): BlobState => {
     // Explicit data-cursor overrides
@@ -25,6 +27,10 @@ export default function BlobCursor() {
       const rect = explicitPill.getBoundingClientRect();
       const style = getComputedStyle(explicitPill);
       return { mode: "pill", rect, borderRadius: style.borderRadius || "9999px" };
+    }
+    const explicitNone = target.closest("[data-cursor='none']") as HTMLElement | null;
+    if (explicitNone && !target.closest("[data-cursor='pill']")) {
+      return { mode: "dot", rect: null, borderRadius: "" };
     }
     const explicitUnderline = target.closest("[data-cursor='underline']") as HTMLElement | null;
     if (explicitUnderline) {
@@ -105,6 +111,7 @@ export default function BlobCursor() {
     const handleMouseMove = (e: MouseEvent) => {
       targetRef.current.x = e.clientX;
       targetRef.current.y = e.clientY;
+      inPlaygroundRef.current = !!(e.target as HTMLElement).closest("#playground");
       updateActiveRect();
     };
 
@@ -194,12 +201,24 @@ export default function BlobCursor() {
       c.r += (m.r - c.r) * morphLerp;
       c.opacity += (m.opacity - c.opacity) * morphLerp;
 
+      // Lerp color between orange (0) and white (1)
+      const targetColor = inPlaygroundRef.current ? 1 : 0;
+      colorRef.current += (targetColor - colorRef.current) * morphLerp;
+      const t = colorRef.current;
+      // Orange: rgb(255,153,85) → White: rgb(255,255,255)
+      const r = Math.round(255);
+      const g = Math.round(153 + (255 - 153) * t);
+      const b = Math.round(85 + (255 - 85) * t);
+      const a = 0.6 + 0.4 * t; // outer alpha: 0.6 → 1.0
+
       if (blobRef.current) {
         blobRef.current.style.transform = `translate(${c.x}px, ${c.y}px) translate(-50%, -50%)`;
         blobRef.current.style.width = `${c.w}px`;
         blobRef.current.style.height = `${c.h}px`;
         blobRef.current.style.borderRadius = `${c.r}px`;
         blobRef.current.style.opacity = String(c.opacity);
+        blobRef.current.style.background = `radial-gradient(circle, rgb(${r},${g},${b}) 0%, rgb(${r},${g},${b}) 60%, rgba(${r},${g},${b},${a.toFixed(2)}) 100%)`;
+        blobRef.current.style.boxShadow = `0 0 16px 4px rgba(${r},${g},${b},0.25)`;
       }
 
       rafRef.current = requestAnimationFrame(animate);

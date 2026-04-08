@@ -218,7 +218,7 @@ export default function Works() {
                     {project.company}
                   </p>
 
-                  <h3 className="mt-2 inline font-serif text-[36px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
+                  <h3 className="mt-2 inline font-serif text-[36px] font-normal leading-[1.2] tracking-[-0.5px] text-white group-hover:underline lg:text-[42px]">
                     {project.title}
                   </h3>
 
@@ -243,11 +243,11 @@ export default function Works() {
                 transition={{ duration: 0.7, delay: i * 0.1, ease }}
               >
                 {isInternal ? (
-                  <TransitionLink href={project.link} className="group block">
+                  <TransitionLink href={project.link} className="group block no-underline">
                     {cardContent}
                   </TransitionLink>
                 ) : (
-                  <a href={project.link} className="group block">
+                  <a href={project.link} className="group block no-underline">
                     {cardContent}
                   </a>
                 )}
