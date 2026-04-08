@@ -147,7 +147,7 @@ export default function Playground() {
         />
 
         {/* Film grain texture */}
-        <div className="pointer-events-none absolute inset-0 animate-grain opacity-[0.12] mix-blend-overlay" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.35] mix-blend-overlay" style={{ backgroundImage: "url('/images/grain-texture.png')", backgroundSize: "256px 256px", backgroundRepeat: "repeat" }} />
 
         <div className="relative z-10 mx-auto max-w-[1180px]">
         <motion.div

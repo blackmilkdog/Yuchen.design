@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Starfield from "./Starfield";
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -102,7 +101,6 @@ export default function Hero() {
                 className="absolute -bottom-1 left-0 h-[3px] w-full origin-left rounded-full bg-gradient-to-r from-accent to-[#ffb366]"
               />
             </span>
-            .
           </motion.h1>
 
           {/* Word-by-word reveal */}
@@ -170,14 +168,15 @@ export default function Hero() {
           }} />
 
           {/* Portrait */}
-          <div className="relative h-[380px] w-[380px] overflow-hidden rounded-full border-2 border-white/10 xl:h-[420px] xl:w-[420px]">
-            <Image
-              src="/images/portrait.jpg"
-              alt="Yuchen Zhang"
-              fill
-              className="object-cover"
-              sizes="420px"
-              priority
+          <div
+            className="relative h-[380px] w-[380px] overflow-hidden rounded-full border-2 border-white/10 xl:h-[420px] xl:w-[420px]"
+            style={{
+              background: "linear-gradient(135deg, #ffcc00 0%, #ff8c42 35%, #e63b2e 65%, #ff4500 100%)",
+            }}
+          >
+            <div
+              className="absolute inset-0 opacity-[0.3] mix-blend-overlay"
+              style={{ backgroundImage: "url('/images/grain-texture.png')", backgroundSize: "256px 256px", backgroundRepeat: "repeat" }}
             />
           </div>
 
