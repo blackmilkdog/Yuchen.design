@@ -73,7 +73,7 @@ function PlaygroundCard({ project, index }: { project: Project; index: number })
       </div>
 
       {/* Dark overlay – darkens + covers blur on hover */}
-      <div className="absolute inset-0 bg-black/30 transition-all duration-500 group-hover:bg-black/60" />
+      <div className="absolute inset-0 bg-black/5 transition-all duration-500 group-hover:bg-black/50" />
 
       {/* Content overlay – pinned to bottom */}
       <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end p-6 sm:p-8">
@@ -109,9 +109,10 @@ export default function Playground() {
   return (
     <section id="playground" className="px-6 py-12 sm:px-8 md:py-16 lg:px-12">
       <div
-        className="mx-auto rounded-[36px] px-8 py-20 md:py-32 lg:px-16"
+        className="mx-auto rounded-[36px] px-8 py-20 md:py-32 lg:px-16 animate-gradient-shift"
         style={{
-          background: "linear-gradient(180deg, #e8662a 0%, #f5903c 40%, #f0783a 70%, #d45520 100%)",
+          background: "linear-gradient(135deg, #e8662a, #f5903c, #ff6b6b, #ffa040, #d45520, #ff8c42, #e8662a)",
+          backgroundSize: "300% 300%",
         }}
       >
         <div className="mx-auto max-w-[1180px]">

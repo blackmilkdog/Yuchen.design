@@ -49,6 +49,18 @@ a {
   border-radius: 3px;
 }
 
+/* Animated gradient for Playground section */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 0%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 0% 100%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient-shift {
+  animation: gradient-shift 8s ease infinite;
+}
+
 /* Playground button hover fill */
 .playground-btn {
   background-color: rgba(20, 20, 60, 0.75);
