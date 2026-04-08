@@ -145,8 +145,8 @@ function ParallaxTags({ tags, imageFirst }: { tags: string[]; imageFirst: boolea
     offset: ["start end", "end start"],
   });
   const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
-  const rotateY = useTransform(scrollYProgress, [0, 0.5, 1], imageFirst ? [-6, 3, 6] : [6, -3, -6]);
-  const rotate = useTransform(scrollYProgress, [0, 0.5, 1], imageFirst ? [3, -1.5, -3] : [-3, 1.5, 3]);
+  const rotateY = useTransform(scrollYProgress, [0, 0.5, 1], imageFirst ? [6, -3, -6] : [-6, 3, 6]);
+  const rotate = useTransform(scrollYProgress, [0, 0.5, 1], imageFirst ? [-3, 1.5, 3] : [3, -1.5, -3]);
 
   return (
     <motion.div
