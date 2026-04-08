@@ -1,12 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import FooterDog from "./FooterDog";
 
 const ease = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 export default function Footer() {
   return (
-    <footer className="px-8 pb-16 pt-32 lg:px-16">
+    <footer className="relative overflow-hidden px-8 pb-16 pt-32 lg:px-16">
+      <FooterDog />
       {/* Big CTA */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -17,6 +19,8 @@ export default function Footer() {
       >
 <a
           href="mailto:yuchen666333@gmail.com"
+          onMouseEnter={() => window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: true }))}
+          onMouseLeave={() => window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: false }))}
           className="group mt-6 inline-flex items-center gap-4 font-serif text-[48px] leading-[1.2] tracking-[-1px] text-white md:text-[72px]"
         >
           <span className="relative">

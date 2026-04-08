@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SpotlightTransition from "@/components/SpotlightTransition";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -32,7 +33,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <SpotlightTransition>{children}</SpotlightTransition>
+      </body>
     </html>
   );
 }

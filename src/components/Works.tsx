@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import TransitionLink from "./TransitionLink";
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -58,7 +59,7 @@ const projects: Project[] = [
       "Feedback-to-Release Loop",
       "AI-first Prototyping",
     ],
-    link: "#",
+    link: "/codepay",
   },
   {
     company: "BonCamel . E-Commerce Startup",
@@ -74,7 +75,7 @@ const projects: Project[] = [
       "Hi-Fi Prototyping",
       "Interaction Design",
     ],
-    link: "#",
+    link: "/novibox",
   },
   {
     company: "DiDi . Mobility Platform",
@@ -90,7 +91,7 @@ const projects: Project[] = [
       "Edge-Case Design",
       "Prototype \u2192 Ship",
     ],
-    link: "#",
+    link: "/didi",
   },
   {
     company: "Philly Truce . NGO of Community Safety",
@@ -192,44 +193,56 @@ export default function Works() {
         <div className="flex flex-col gap-24 lg:gap-32">
           {projects.map((project, i) => {
             const imageFirst = i % 2 === 0;
+            const isInternal = project.link.startsWith("/");
+
+            const cardContent = (
+              <div className={`flex flex-col lg:flex-row lg:items-center lg:gap-16 ${imageFirst ? "" : "lg:flex-row-reverse"}`}>
+                {/* Image with tag list */}
+                <div className="relative lg:w-[55%] lg:flex-shrink-0" style={{ perspective: 800 }}>
+                  <Perspective3DImage src={project.image} alt={project.title} imageFirst={imageFirst} />
+                  <ParallaxTags tags={project.tags} imageFirst={imageFirst} />
+                </div>
+
+                {/* Text content */}
+                <div className="mt-6 lg:mt-0 lg:flex-1">
+                  <p className="font-mono text-[14px] uppercase tracking-[0.1em] text-white/50">
+                    {project.company}
+                  </p>
+
+                  <h3 className="mt-2 font-serif text-[36px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
+                    {project.title}
+                  </h3>
+
+                  <p className="mt-3 font-mono text-[14px] tracking-[0.05em] text-white/50">
+                    {project.date}
+                  </p>
+
+                  <p className="mt-4 font-sans text-[17px] leading-[1.7] tracking-[-0.17px] text-white lg:text-[20px]">
+                    {project.description}
+                  </p>
+                </div>
+              </div>
+            );
+
             return (
-              <motion.a
+              <motion.div
                 key={project.title}
-                href={project.link}
                 custom={i}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.7, delay: i * 0.1, ease }}
-                className="group block"
               >
-                <div className={`flex flex-col lg:flex-row lg:items-center lg:gap-16 ${imageFirst ? "" : "lg:flex-row-reverse"}`}>
-                  {/* Image with tag list */}
-                  <div className="relative lg:w-[55%] lg:flex-shrink-0" style={{ perspective: 800 }}>
-                    <Perspective3DImage src={project.image} alt={project.title} imageFirst={imageFirst} />
-                    <ParallaxTags tags={project.tags} imageFirst={imageFirst} />
-                  </div>
-
-                  {/* Text content */}
-                  <div className="mt-6 lg:mt-0 lg:flex-1">
-                    <p className="font-mono text-[14px] uppercase tracking-[0.1em] text-white/50">
-                      {project.company}
-                    </p>
-
-                    <h3 className="mt-2 font-serif text-[36px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
-                      {project.title}
-                    </h3>
-
-                    <p className="mt-3 font-mono text-[14px] tracking-[0.05em] text-white/50">
-                      {project.date}
-                    </p>
-
-                    <p className="mt-4 font-sans text-[17px] leading-[1.7] tracking-[-0.17px] text-white lg:text-[20px]">
-                      {project.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.a>
+                {isInternal ? (
+                  <TransitionLink href={project.link} className="group block">
+                    {cardContent}
+                  </TransitionLink>
+                ) : (
+                  <a href={project.link} className="group block">
+                    {cardContent}
+                  </a>
+                )}
+              </motion.div>
             );
           })}
         </div>

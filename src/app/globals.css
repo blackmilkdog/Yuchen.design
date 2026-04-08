@@ -188,9 +188,21 @@ a {
 .animate-aurora-spin { animation: aurora-spin 12s linear infinite; }
 .animate-aurora-spin-reverse { animation: aurora-spin-reverse 16s linear infinite; }
 
-/* Floating skill pills */
+/* Pulsing glow behind sun */
+@keyframes sun-glow-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.5); }
+}
+.animate-sun-glow-pulse { animation: sun-glow-pulse 6s ease-in-out infinite; }
+
+/* Floating skill pills – orbit + bounce */
 @keyframes float-pill {
   0%, 100% { transform: translateY(0px); }
   50%      { transform: translateY(-8px); }
 }
 .animate-float-pill { animation: float-pill 4s ease-in-out infinite; }
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
