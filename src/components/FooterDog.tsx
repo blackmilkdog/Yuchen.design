@@ -178,7 +178,7 @@ export default function FooterDog() {
       transition={{ duration: 1, delay: 0.3, ease }}
       style={{ x: springX, y: springY }}
       data-cursor="bone"
-      className="absolute right-[-60px] bottom-[-20px] z-[2] hidden w-[260px] -rotate-[25deg] overflow-hidden lg:block"
+      className="footer-dog absolute right-[-60px] bottom-[-20px] z-[2] hidden w-[260px] -rotate-[25deg] overflow-hidden lg:block"
     >
       <img
         src="/images/dog.png"
