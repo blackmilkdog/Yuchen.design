@@ -41,7 +41,7 @@ export default function Header() {
         </a>
 
         <a
-          href="/resume.pdf"
+          href="https://drive.google.com/file/d/1gWz4HvOsHAi1Yj_CGT_X247A5x4kLIcH/view"
           target="_blank"
           rel="noopener noreferrer"
           className="font-sans text-[14px] tracking-[-0.14px] text-white/60 transition-colors duration-200 hover:text-white sm:text-[15px]"

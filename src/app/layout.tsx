@@ -6,7 +6,11 @@ export const metadata: Metadata = {
   title: "Yuchen Zhang_Product Designer",
   description: "Yuchen Zhang_Product Designer_Homepage",
   icons: {
-    icon: "/images/favicon.png",
+    icon: [
+      { url: "/images/favicon.png", sizes: "192x192", type: "image/png" },
+      { url: "/images/favicon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/images/apple-touch-icon.png",
   },
 };
 

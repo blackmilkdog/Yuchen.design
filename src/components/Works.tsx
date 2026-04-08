@@ -157,20 +157,20 @@ function ParallaxTags({ tags, imageFirst }: { tags: string[]; imageFirst: boolea
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: 0.3, ease }}
-      className={`absolute bottom-0 z-20 flex translate-y-[12.5%] flex-wrap gap-2 ${
-        imageFirst ? "right-0 translate-x-[12.5%] justify-end" : "left-0 -translate-x-[12.5%] justify-start"
+      className={`absolute bottom-0 z-20 flex translate-y-[12.5%] flex-col gap-2.5 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-[20px] sm:px-6 sm:py-5 ${
+        imageFirst ? "right-0 translate-x-[12.5%]" : "left-0 -translate-x-[12.5%]"
       }`}
     >
       {tags.map((tag, idx) => (
         <motion.span
           key={tag}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.3 + idx * 0.06, ease }}
-          className="flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-satoshi text-[12px] tracking-[-0.1px] text-white/60 backdrop-blur-md sm:text-[13px]"
+          className="flex items-center gap-2 whitespace-nowrap font-satoshi text-[12px] tracking-[-0.1px] text-black sm:text-[13px]"
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-white/40">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-black/50">
             {tagIcons[tag]}
           </svg>
           {tag}
