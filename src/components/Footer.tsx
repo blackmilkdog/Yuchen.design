@@ -1,11 +1,46 @@
 "use client";
 
+import { useRef, useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import FooterDog from "./FooterDog";
 
 const ease = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 export default function Footer() {
+  const boneRef = useRef<HTMLDivElement>(null);
+  const [boneDragging, setBoneDragging] = useState(false);
+  const [boneVisible, setBoneVisible] = useState(true);
+  const pointerPos = useRef({ x: 0, y: 0 });
+
+  // Track real pointer position since Framer info.point is element position
+  useEffect(() => {
+    const track = (e: PointerEvent) => {
+      pointerPos.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("pointermove", track);
+    return () => window.removeEventListener("pointermove", track);
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    setBoneDragging(false);
+    const dogEl = document.querySelector("[data-cursor='bone']");
+    if (dogEl) {
+      const rect = dogEl.getBoundingClientRect();
+      const { x, y } = pointerPos.current;
+      // Generous hit area (expand by 40px each side)
+      if (
+        x >= rect.left - 40 &&
+        x <= rect.right + 40 &&
+        y >= rect.top - 40 &&
+        y <= rect.bottom + 40
+      ) {
+        setBoneVisible(false);
+        window.dispatchEvent(new CustomEvent("dog-bone-drop"));
+        setTimeout(() => setBoneVisible(true), 3000);
+      }
+    }
+  }, []);
+
   return (
     <footer className="relative overflow-hidden px-8 pb-16 pt-32 lg:px-16">
       <FooterDog />
@@ -85,6 +120,39 @@ export default function Footer() {
           Made with &lt;3 by Yuchen :)
         </p>
       </div>
+
+      {/* Draggable bone for the dog */}
+      {boneVisible && (
+        <motion.div
+          ref={boneRef}
+          drag
+          dragSnapToOrigin
+          onDragStart={() => {
+            setBoneDragging(true);
+            window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: true }));
+          }}
+          onDragEnd={() => {
+            window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: false }));
+            handleDragEnd();
+          }}
+          onHoverStart={() => window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: true }))}
+          onHoverEnd={() => { if (!boneDragging) window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: false })); }}
+          whileDrag={{ scale: 1.2 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          data-cursor="pill"
+          className="absolute bottom-4 left-4 z-20 cursor-grab select-none text-2xl active:cursor-grabbing"
+          title="Drag me to the dog!"
+        >
+          <motion.span
+            animate={boneDragging ? {} : { y: [0, -4, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="inline-block"
+          >
+            🦴
+          </motion.span>
+        </motion.div>
+      )}
     </footer>
   );
 }

@@ -72,7 +72,7 @@ function PlaygroundCard({ project, index }: { project: Project; index: number })
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5, delay: baseDelay, ease }}
-      data-cursor="none"
+      data-cursor="arrow"
       className="group relative block aspect-[4/3] overflow-hidden rounded-[36px] border border-white/15 no-underline"
       onMouseMove={handleCardMouse}
       onMouseLeave={handleCardLeave}

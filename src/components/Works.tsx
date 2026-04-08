@@ -243,11 +243,11 @@ export default function Works() {
                 transition={{ duration: 0.7, delay: i * 0.1, ease }}
               >
                 {isInternal ? (
-                  <TransitionLink href={project.link} className="group block no-underline">
+                  <TransitionLink href={project.link} data-cursor="look" className="group block no-underline">
                     {cardContent}
                   </TransitionLink>
                 ) : (
-                  <a href={project.link} className="group block no-underline">
+                  <a href={project.link} data-cursor="look" className="group block no-underline">
                     {cardContent}
                   </a>
                 )}

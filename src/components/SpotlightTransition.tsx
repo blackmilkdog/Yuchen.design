@@ -53,8 +53,9 @@ export default function SpotlightTransition({
         return;
       }
 
-      // Set overlay color
-      overlay.style.backgroundColor = color || "#fff";
+      // Set initial overlay color (orange like cursor, lerps to white)
+      const startColor = color || "#ff9955";
+      overlay.style.backgroundColor = startColor;
 
       // Reset overlay state
       overlay.style.opacity = "1";
@@ -63,22 +64,23 @@ export default function SpotlightTransition({
       // Force reflow so the browser registers the starting value
       overlay.getBoundingClientRect();
 
-      // Expand the circle
+      // Expand the circle and lerp color to white
       overlay.style.transition =
-        "clip-path 600ms cubic-bezier(0.16, 1, 0.3, 1)";
+        "clip-path 1000ms cubic-bezier(0.16, 1, 0.3, 1), background-color 1000ms cubic-bezier(0.16, 1, 0.3, 1)";
       overlay.style.clipPath = `circle(150vmax at ${x}px ${y}px)`;
+      overlay.style.backgroundColor = "#ffffff";
 
       // At the midpoint, navigate and scroll to top
       const navTimer = setTimeout(() => {
         window.scrollTo(0, 0);
         router.push(href);
-      }, 300);
+      }, 500);
 
       // After the circle is fully expanded, fade out the overlay
       const fadeTimer = setTimeout(() => {
-        overlay.style.transition = "opacity 250ms ease";
+        overlay.style.transition = "opacity 400ms ease";
         overlay.style.opacity = "0";
-      }, 650);
+      }, 1050);
 
       // Clean up after everything completes
       const cleanupTimer = setTimeout(() => {
@@ -87,7 +89,7 @@ export default function SpotlightTransition({
         overlay.style.pointerEvents = "none";
         lockRef.current = false;
         setIsTransitioning(false);
-      }, 920);
+      }, 1500);
 
       // Store timers for potential cleanup
       return () => {

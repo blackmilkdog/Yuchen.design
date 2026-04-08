@@ -3,8 +3,8 @@ import SpotlightTransition from "@/components/SpotlightTransition";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Yuchen Zhang_Product Designer",
-  description: "Yuchen Zhang_Product Designer_Homepage",
+  title: "Yuchen Zhang - Portfolio",
+  description: "Yuchen Zhang - Portfolio",
   icons: {
     icon: [
       { url: "/images/favicon.png", sizes: "192x192", type: "image/png" },

@@ -4,29 +4,44 @@ import { useEffect, useRef, useCallback } from "react";
 
 interface BlobState {
   // Default dot
-  mode: "dot" | "pill" | "underline" | "card";
+  mode: "dot" | "pill" | "underline" | "card" | "look" | "arrow";
   rect: DOMRect | null;
   borderRadius: string;
 }
 
 export default function BlobCursor() {
   const blobRef = useRef<HTMLDivElement>(null);
+  const lookLabelRef = useRef<HTMLSpanElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
   const targetRef = useRef({ x: 0, y: 0 });
   const rafRef = useRef<number>(0);
   const stateRef = useRef<BlobState>({ mode: "dot", rect: null, borderRadius: "" });
   const morphRef = useRef({ x: 0, y: 0, w: 8, h: 8, r: 9999, opacity: 1 });
   const targetMorphRef = useRef({ x: 0, y: 0, w: 8, h: 8, r: 9999, opacity: 1 });
+  const arrowRef = useRef<HTMLDivElement>(null);
+  const arrowTargetRef = useRef<HTMLElement | null>(null);
+  const arrowRotRef = useRef(0);
+  const arrowScaleRef = useRef(0);
   const inPlaygroundRef = useRef(false);
   const colorRef = useRef(0); // 0 = orange, 1 = white
 
   const detectMode = useCallback((target: HTMLElement): BlobState => {
     // Explicit data-cursor overrides
+    const explicitLook = target.closest("[data-cursor='look']") as HTMLElement | null;
+    if (explicitLook) {
+      return { mode: "look", rect: null, borderRadius: "" };
+    }
     const explicitPill = target.closest("[data-cursor='pill']") as HTMLElement | null;
     if (explicitPill) {
       const rect = explicitPill.getBoundingClientRect();
       const style = getComputedStyle(explicitPill);
       return { mode: "pill", rect, borderRadius: style.borderRadius || "9999px" };
+    }
+    const explicitArrow = target.closest("[data-cursor='arrow']") as HTMLElement | null;
+    if (explicitArrow) {
+      const btn = explicitArrow.querySelector("[data-cursor='pill']") as HTMLElement | null;
+      arrowTargetRef.current = btn;
+      return { mode: "arrow", rect: null, borderRadius: "" };
     }
     const explicitNone = target.closest("[data-cursor='none']") as HTMLElement | null;
     if (explicitNone && !target.closest("[data-cursor='pill']")) {
@@ -193,6 +208,20 @@ export default function BlobCursor() {
         m.h = 8;
         m.r = 9999;
         m.opacity = 1;
+      } else if (state.mode === "look") {
+        m.x = posRef.current.x;
+        m.y = posRef.current.y;
+        m.w = 90;
+        m.h = 90;
+        m.r = 9999;
+        m.opacity = 1;
+      } else if (state.mode === "arrow") {
+        m.x = posRef.current.x;
+        m.y = posRef.current.y;
+        m.w = 0;
+        m.h = 0;
+        m.r = 9999;
+        m.opacity = 0;
       } else if (state.mode === "underline" && state.rect) {
         const r = state.rect;
         m.x = r.left + r.width / 2;
@@ -238,6 +267,33 @@ export default function BlobCursor() {
       const b = Math.round(85 + (255 - 85) * t);
       const a = 0.6 + 0.4 * t; // outer alpha: 0.6 → 1.0
 
+      // Show/hide arrow for look mode
+      if (lookLabelRef.current) {
+        const targetLookOpacity = state.mode === "look" ? 1 : 0;
+        const currentLookOpacity = parseFloat(lookLabelRef.current.style.opacity || "0");
+        lookLabelRef.current.style.opacity = String(currentLookOpacity + (targetLookOpacity - currentLookOpacity) * morphLerp);
+      }
+
+      // Show/hide + rotate arrow icon
+      if (arrowRef.current) {
+        const targetArrowScale = state.mode === "arrow" ? 1 : 0;
+        arrowScaleRef.current += (targetArrowScale - arrowScaleRef.current) * morphLerp;
+
+        if (state.mode === "arrow" && arrowTargetRef.current) {
+          const btnRect = arrowTargetRef.current.getBoundingClientRect();
+          const btnCx = btnRect.left + btnRect.width / 2;
+          const btnCy = btnRect.top + btnRect.height / 2;
+          const targetAngle = Math.atan2(btnCy - c.y, btnCx - c.x) * (180 / Math.PI);
+          let delta = targetAngle - arrowRotRef.current;
+          delta = ((delta + 540) % 360) - 180;
+          arrowRotRef.current += delta * morphLerp;
+        }
+
+        const s = arrowScaleRef.current;
+        arrowRef.current.style.transform = `translate(${c.x}px, ${c.y}px) translate(-50%, -50%) rotate(${arrowRotRef.current}deg) scale(${s})`;
+        arrowRef.current.style.opacity = String(s);
+      }
+
       if (blobRef.current) {
         blobRef.current.style.transform = `translate(${c.x}px, ${c.y}px) translate(-50%, -50%)`;
         blobRef.current.style.width = `${c.w}px`;
@@ -265,13 +321,34 @@ export default function BlobCursor() {
 
       <div
         ref={blobRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9999]"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] flex items-center justify-center"
         style={{
           willChange: "transform, width, height, border-radius, opacity",
           background: "radial-gradient(circle, #ff9955 0%, #ff8c42 60%, rgba(255,140,66,0.6) 100%)",
           boxShadow: "0 0 16px 4px rgba(255,140,66,0.25)",
         }}
-      />
+      >
+        <span
+          ref={lookLabelRef}
+          className="absolute flex flex-col items-center font-sans text-[11px] font-semibold uppercase leading-tight tracking-[0.1em] text-white"
+          style={{ opacity: 0 }}
+        >
+          <span>Look</span>
+          <span>Inside</span>
+        </span>
+      </div>
+      <div
+        ref={arrowRef}
+        className="pointer-events-none fixed left-0 top-0 z-[9999]"
+        style={{
+          willChange: "transform, opacity",
+          opacity: 0,
+        }}
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: "drop-shadow(0 0 4px rgba(0,0,0,0.5))" }}>
+          <path d="M5 12h14M13 5l7 7-7 7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
     </>
   );
 }

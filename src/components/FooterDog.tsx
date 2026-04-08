@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useState, useCallback } from "react";
+import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -86,8 +86,22 @@ function GooglyEye({
   );
 }
 
+type Particle = {
+  id: number;
+  emoji: string;
+  x: number;
+  y: number;
+  angle: number;
+  distance: number;
+  delay: number;
+  size: number;
+};
+
+let particleId = 0;
+
 export default function FooterDog() {
   const [eyeScale, setEyeScale] = useState(1);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -99,13 +113,42 @@ export default function FooterDog() {
   const pupilX = useSpring(pupilRawX, { stiffness: 150, damping: 15 });
   const pupilY = useSpring(pupilRawY, { stiffness: 150, damping: 15 });
 
+  const spawnParticles = useCallback(() => {
+    const emojis = ["✨", "💖", "💕", "⭐", "🩷", "✨", "💗", "⭐"];
+    const newParticles: Particle[] = [];
+    for (let i = 0; i < 16; i++) {
+      newParticles.push({
+        id: particleId++,
+        emoji: emojis[i % emojis.length],
+        x: 50 + (Math.random() - 0.5) * 40,
+        y: 50 + (Math.random() - 0.5) * 40,
+        angle: (Math.PI * 2 * i) / 16 + (Math.random() - 0.5) * 0.5,
+        distance: 60 + Math.random() * 80,
+        delay: Math.random() * 0.3,
+        size: 14 + Math.random() * 14,
+      });
+    }
+    setParticles(newParticles);
+    setTimeout(() => setParticles([]), 2000);
+  }, []);
+
   useEffect(() => {
     const handleEyeScale = (e: Event) => {
       setEyeScale((e as CustomEvent).detail ? 1.5 : 1);
     };
+    const handleBoneDrop = () => {
+      spawnParticles();
+      // Also make eyes go big briefly
+      setEyeScale(1.8);
+      setTimeout(() => setEyeScale(1), 1500);
+    };
     window.addEventListener("dog-eyes-scale", handleEyeScale);
-    return () => window.removeEventListener("dog-eyes-scale", handleEyeScale);
-  }, []);
+    window.addEventListener("dog-bone-drop", handleBoneDrop);
+    return () => {
+      window.removeEventListener("dog-eyes-scale", handleEyeScale);
+      window.removeEventListener("dog-bone-drop", handleBoneDrop);
+    };
+  }, [spawnParticles]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -151,6 +194,39 @@ export default function FooterDog() {
         <GooglyEye pupilX={pupilX} pupilY={pupilY} cx={325} cy={285} r={85} scale={eyeScale} fancy={eyeScale > 1} />
         <GooglyEye pupilX={pupilX} pupilY={pupilY} cx={560} cy={345} r={85} scale={eyeScale} fancy={eyeScale > 1} />
       </svg>
+
+      {/* Sparkle / heart particles on bone drop */}
+      <AnimatePresence>
+        {particles.map((p) => (
+          <motion.span
+            key={p.id}
+            initial={{
+              opacity: 1,
+              scale: 0,
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              x: 0,
+              y: 0,
+            }}
+            animate={{
+              opacity: [1, 1, 0],
+              scale: [0, 1.2, 0.8],
+              x: Math.cos(p.angle) * p.distance,
+              y: Math.sin(p.angle) * p.distance,
+            }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 1.2,
+              delay: p.delay,
+              ease: "easeOut",
+            }}
+            className="pointer-events-none absolute z-30"
+            style={{ fontSize: p.size }}
+          >
+            {p.emoji}
+          </motion.span>
+        ))}
+      </AnimatePresence>
     </motion.div>
   );
 }
