@@ -116,6 +116,25 @@ export default function BlobCursor() {
     };
 
     const handleScroll = () => {
+      // Re-detect what's under the cursor after scroll
+      const el = document.elementFromPoint(targetRef.current.x, targetRef.current.y) as HTMLElement | null;
+      if (el) {
+        const state = detectMode(el);
+        stateRef.current = state;
+        if (state.mode === "pill") {
+          activeEl = el.closest("[data-cursor='pill']") as HTMLElement | null;
+        } else if (state.mode === "underline") {
+          activeEl = (el.closest("[data-cursor='underline']") || el.closest("h3, h2") || el.closest("a[href], button")) as HTMLElement | null;
+        } else if (state.mode !== "dot") {
+          activeEl = el.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
+        } else {
+          activeEl = null;
+        }
+        inPlaygroundRef.current = !!el.closest("#playground");
+      } else {
+        stateRef.current = { mode: "dot", rect: null, borderRadius: "" };
+        activeEl = null;
+      }
       updateActiveRect();
     };
 
@@ -123,9 +142,17 @@ export default function BlobCursor() {
       const target = e.target as HTMLElement;
       const state = detectMode(target);
       stateRef.current = state;
-      // Track the element for rect updates
-      const el = target.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
-      activeEl = state.mode !== "dot" ? el : null;
+      // Track the element for rect updates — for pill mode, track the data-cursor element, not the link ancestor
+      if (state.mode === "pill") {
+        activeEl = target.closest("[data-cursor='pill']") as HTMLElement | null;
+      } else if (state.mode === "underline") {
+        // Track the actual underlined element (title, link text), not the card ancestor
+        activeEl = (target.closest("[data-cursor='underline']") || target.closest("h3, h2") || target.closest("a[href], button")) as HTMLElement | null;
+      } else if (state.mode !== "dot") {
+        activeEl = target.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
+      } else {
+        activeEl = null;
+      }
     };
 
     const handleMouseOut = (e: MouseEvent) => {
