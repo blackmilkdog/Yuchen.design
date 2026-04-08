@@ -59,7 +59,7 @@ export default function Story() {
 
         <div className="mt-8 flex flex-col gap-8 lg:mt-16 lg:flex-row lg:gap-16">
           {/* Tab nav – horizontal scroll on mobile, sticky sidebar on desktop */}
-          <nav className="hidden lg:sticky lg:top-8 lg:flex lg:w-[220px] lg:shrink-0 lg:flex-col lg:gap-4 lg:self-start">
+          <nav className="hidden lg:sticky lg:top-20 lg:flex lg:w-[220px] lg:shrink-0 lg:flex-col lg:gap-4 lg:self-start">
             {tabs.map((tab) => (
               <button
                 key={tab}

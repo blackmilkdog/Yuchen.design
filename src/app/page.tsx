@@ -1,6 +1,7 @@
 "use client";
 
 import Navigation from "@/components/Navigation";
+import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Works from "@/components/Works";
 import Playground from "@/components/Playground";
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <main className="relative w-full">
       <SmoothScroll />
+      <Header />
       <Hero />
       <Works />
       <Playground />

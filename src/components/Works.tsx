@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -14,6 +15,33 @@ interface Project {
   tags: string[];
   link: string;
 }
+
+const tagIcons: Record<string, React.ReactNode> = {
+  // CodePay
+  "Design Systems at Scale": <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />,
+  "High-Trust UX (Risk & Clarity)": <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
+  "Workflow Simplification": <><path d="M4 12h16" /><path d="M4 6h16" /><path d="M4 18h10" /><path d="M17 15l3 3-3 3" /></>,
+  "Feedback-to-Release Loop": <><path d="M21 12a9 9 0 1 1-6.2-8.6" /><path d="M21 3v6h-6" /></>,
+  "AI-first Prototyping": <><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11h-4V9.5A4 4 0 0 1 12 2z" /><path d="M10 11h4v2h-4z" /><path d="M9 15h6" /><path d="M10 18h4" /></>,
+  // BonCamel
+  "0\u21921 Feature Design": <><path d="M12 5l7 14H5z" /></>,
+  "User Research + Usability Testing": <><circle cx="12" cy="8" r="4" /><path d="M6 20v-2a6 6 0 0 1 12 0v2" /></>,
+  "Conversion Optimization": <><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></>,
+  "Hi-Fi Prototyping": <><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18" /><path d="M9 21V9" /></>,
+  "Interaction Design": <><path d="M15 15l-2 5L9 9l11 4-5 2z" /><path d="M18.5 18.5L22 22" /></>,
+  // DiDi
+  "Safety-Critical UX": <><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><circle cx="12" cy="17" r="0.5" fill="currentColor" /></>,
+  "Dispatch Ops Workflows": <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M9 15l2 2 4-4" /></>,
+  "Simulation / Validation": <><circle cx="12" cy="12" r="10" /><path d="M10 8l6 4-6 4V8z" /></>,
+  "Edge-Case Design": <><path d="M2 12h4" /><path d="M18 12h4" /><path d="M12 2v4" /><path d="M12 18v4" /><circle cx="12" cy="12" r="4" /></>,
+  "Prototype \u2192 Ship": <><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></>,
+  // Philly Truce
+  "Information Architecture": <><path d="M3 3h7v7H3zM14 3h7v4h-7zM14 10h7v4h-7zM3 13h7v8H3zM14 17h7v4h-7z" /></>,
+  "Hierarchy & Progressive Disclosure": <><path d="M6 9l6 6 6-6" /></>,
+  "0\u21921 Product Definition": <><circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" /></>,
+  "Scope & Prioritization": <><path d="M4 6h16M4 10h12M4 14h8M4 18h4" /></>,
+  "Cross-functional Collaboration": <><circle cx="9" cy="7" r="3" /><circle cx="15" cy="7" r="3" /><path d="M3 19v-2a4 4 0 0 1 4-4h2" /><path d="M15 13h2a4 4 0 0 1 4 4v2" /></>,
+};
 
 const projects: Project[] = [
   {
@@ -82,6 +110,69 @@ const projects: Project[] = [
   },
 ];
 
+function Perspective3DImage({ src, alt, imageFirst }: { src: string; alt: string; imageFirst: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const rotateY = useTransform(scrollYProgress, [0, 0.5, 1], imageFirst ? [-4, 0, 4] : [4, 0, -4]);
+  const rotate = useTransform(scrollYProgress, [0, 0.5, 1], imageFirst ? [2, 0, -2] : [-2, 0, 2]);
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ rotateY, rotate, perspective: 800 }}
+      className="overflow-hidden rounded-[36px]"
+    >
+      <div className="relative aspect-[4/3] w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover"
+          sizes="(max-width: 1024px) 100vw, 660px"
+        />
+      </div>
+    </motion.div>
+  );
+}
+
+function ParallaxTags({ tags, imageFirst }: { tags: string[]; imageFirst: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ y }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.3, ease }}
+      className={`absolute bottom-0 z-20 flex translate-y-[12.5%] flex-col gap-2 rounded-2xl border border-black/10 bg-white/70 px-5 py-4 backdrop-blur-xl sm:px-6 sm:py-5 ${
+        imageFirst ? "right-0 translate-x-[12.5%]" : "left-0 -translate-x-[12.5%]"
+      }`}
+    >
+      {tags.map((tag) => (
+        <span
+          key={tag}
+          className="flex items-center gap-2 whitespace-nowrap font-satoshi text-[13px] leading-[1.5] tracking-[-0.1px] text-black sm:text-[14px]"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-black/50">
+            {tagIcons[tag]}
+          </svg>
+          {tag}
+        </span>
+      ))}
+    </motion.div>
+  );
+}
+
 export default function Works() {
   return (
     <section id="works" className="px-8 lg:px-16">
@@ -111,44 +202,10 @@ export default function Works() {
                 className="group block"
               >
                 <div className={`flex flex-col lg:flex-row lg:items-center lg:gap-16 ${imageFirst ? "" : "lg:flex-row-reverse"}`}>
-                  {/* Image with floating tags */}
-                  <div className="relative lg:w-[55%] lg:flex-shrink-0">
-                    <div className="overflow-hidden rounded-[36px]">
-                      <div className="relative aspect-[4/3] w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
-                        <Image
-                          src={project.image}
-                          alt={project.title}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 1024px) 100vw, 660px"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Floating tag bubbles */}
-                    {project.tags.map((tag, ti) => {
-                      const positions = [
-                        { top: "-6%", left: "5%", rotate: "-3deg" },
-                        { top: "-4%", right: "-2%", rotate: "2deg" },
-                        { bottom: "-5%", left: "8%", rotate: "-2deg" },
-                        { bottom: "-6%", right: "3%", rotate: "3deg" },
-                        { top: "40%", left: "-4%", rotate: "-4deg" },
-                      ];
-                      const pos = positions[ti % positions.length];
-                      return (
-                        <motion.span
-                          key={tag}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5, delay: 0.3 + ti * 0.08, ease }}
-                          className="absolute z-20 inline-flex items-center rounded-full border border-white/15 bg-black/70 px-3 py-1.5 font-satoshi text-[12px] tracking-[-0.12px] text-white/80 backdrop-blur-md transition-colors hover:border-white/40 sm:text-[13px]"
-                          style={pos}
-                        >
-                          {tag}
-                        </motion.span>
-                      );
-                    })}
+                  {/* Image with tag list */}
+                  <div className="relative lg:w-[55%] lg:flex-shrink-0" style={{ perspective: 800 }}>
+                    <Perspective3DImage src={project.image} alt={project.title} imageFirst={imageFirst} />
+                    <ParallaxTags tags={project.tags} imageFirst={imageFirst} />
                   </div>
 
                   {/* Text content */}

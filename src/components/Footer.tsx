@@ -42,7 +42,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="mt-24 flex items-center justify-between">
-        <p className="font-satoshi text-[13px] text-white/20">
+        <p className="font-satoshi text-[13px] text-white">
           Made with &lt;3 by Yuchen :)
         </p>
 
