@@ -8,11 +8,13 @@ import Playground from "@/components/Playground";
 import Story from "@/components/Story";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import BlobCursor from "@/components/BlobCursor";
 
 export default function Home() {
   return (
     <main className="relative w-full">
       <SmoothScroll />
+      <BlobCursor />
       <Header />
       <Hero />
       <Works />

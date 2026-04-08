@@ -23,10 +23,7 @@ export default function Footer() {
           onMouseLeave={() => window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: false }))}
           className="group mt-6 inline-flex items-center gap-4 font-serif text-[48px] leading-[1.2] tracking-[-1px] text-white md:text-[72px]"
         >
-          <span className="relative">
-            Get in Touch
-            <span className="absolute -bottom-2 left-0 h-[2px] w-full origin-left scale-x-0 bg-gradient-to-r from-accent to-accent-secondary transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100" />
-          </span>
+          <span>Get in Touch</span>
           <svg
             width="32"
             height="32"

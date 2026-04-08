@@ -44,10 +44,9 @@ export default function Header() {
           href="https://drive.google.com/file/d/1gWz4HvOsHAi1Yj_CGT_X247A5x4kLIcH/view"
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative font-serif text-[22px] tracking-[-0.5px] text-white/60 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-white sm:text-[26px]"
+          className="font-serif text-[22px] tracking-[-0.5px] text-white/60 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-white sm:text-[26px]"
         >
           Resume
-          <span className="absolute -bottom-1 left-0 h-[2px] w-full origin-left scale-x-0 rounded-full bg-white/60 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100" />
         </a>
       </motion.div>
     </header>

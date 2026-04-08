@@ -63,6 +63,7 @@ export default function Story() {
             {tabs.map((tab) => (
               <button
                 key={tab}
+                data-cursor="underline"
                 onClick={() => {
                   const el = sectionRefs.current[tab];
                   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });

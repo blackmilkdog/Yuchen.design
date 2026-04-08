@@ -134,7 +134,8 @@ export default function FooterDog() {
       viewport={{ once: true }}
       transition={{ duration: 1, delay: 0.3, ease }}
       style={{ x: springX, y: springY }}
-      className="pointer-events-none absolute right-[-60px] bottom-[-20px] z-[2] hidden w-[260px] -rotate-[25deg] overflow-hidden lg:block"
+      data-cursor="bone"
+      className="absolute right-[-60px] bottom-[-20px] z-[2] hidden w-[260px] -rotate-[25deg] overflow-hidden lg:block"
     >
       <img
         src="/images/dog.png"
@@ -143,7 +144,7 @@ export default function FooterDog() {
         draggable={false}
       />
       <svg
-        className="absolute inset-0 h-full w-full"
+        className="pointer-events-none absolute inset-0 h-full w-full"
         viewBox="0 0 1000 1000"
         preserveAspectRatio="xMidYMid slice"
       >

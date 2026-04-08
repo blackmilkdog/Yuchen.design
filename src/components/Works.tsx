@@ -218,7 +218,7 @@ export default function Works() {
                     {project.company}
                   </p>
 
-                  <h3 className="mt-2 font-serif text-[36px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
+                  <h3 className="mt-2 inline font-serif text-[36px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
                     {project.title}
                   </h3>
 
