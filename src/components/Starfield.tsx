@@ -34,9 +34,6 @@ export default function Starfield() {
     let h = 0;
     let scrollY = 0;
     let animId = 0;
-    let mouseX = 0;
-    let mouseY = 0;
-
     // --- Stars ---
     const STAR_COUNT = 260;
     const stars: Star[] = [];
@@ -95,12 +92,6 @@ export default function Starfield() {
       scrollY = window.scrollY;
     }
 
-    // --- Mouse ---
-    function onMouseMove(e: MouseEvent) {
-      mouseX = (e.clientX / w - 0.5) * 2; // -1 to 1
-      mouseY = (e.clientY / h - 0.5) * 2;
-    }
-
     // --- Draw ---
     let lastTime = 0;
     const FADE_IN_DURATION = 1800; // ms
@@ -126,10 +117,8 @@ export default function Starfield() {
         const parallax = star.z * 0.35;
         const sy = star.y - scrollY * parallax;
 
-        // Cursor parallax: closer stars shift more
-        const cursorShift = star.z * 3;
-        const drawX = star.x - mouseX * cursorShift;
-        const rawY = sy - mouseY * cursorShift;
+        const drawX = star.x;
+        const rawY = sy;
 
         // Wrap vertically
         const drawY = ((rawY % (h * 2.5)) + h * 2.5) % (h * 2.5) - h * 0.5;
@@ -213,7 +202,6 @@ export default function Starfield() {
     resize();
     window.addEventListener("resize", resize);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
     onScroll();
     animId = requestAnimationFrame(draw);
 
@@ -221,7 +209,6 @@ export default function Starfield() {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("mousemove", onMouseMove);
     };
   }, []);
 

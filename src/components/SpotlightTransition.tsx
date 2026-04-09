@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { PointerProvider } from "./PointerContext";
 
 interface SpotlightContextValue {
   /** Trigger the spotlight transition from (x, y) to the given href */
@@ -102,6 +103,7 @@ export default function SpotlightTransition({
   );
 
   return (
+    <PointerProvider>
     <SpotlightContext.Provider value={{ start, isTransitioning }}>
       {children}
       {/* Overlay */}
@@ -120,5 +122,6 @@ export default function SpotlightTransition({
         }}
       />
     </SpotlightContext.Provider>
+    </PointerProvider>
   );
 }

@@ -1,6 +1,7 @@
 "use client"; 
 
 import { useEffect, useRef, useCallback, useState } from "react";
+import { usePointer } from "./PointerContext";
 
 interface BlobState {
   // Default dot
@@ -22,6 +23,7 @@ export default function BlobCursor() {
   const arrowTargetRef = useRef<HTMLElement | null>(null);
   const arrowRotRef = useRef(0);
   const arrowScaleRef = useRef(0);
+  const arrowSizeRef = useRef(1);
   const inPlaygroundRef = useRef(false);
   const colorRef = useRef(0); // 0 = orange, 1 = white
   const [hidden, setHidden] = useState(false);
@@ -140,20 +142,23 @@ export default function BlobCursor() {
     return { mode: "pill", rect, borderRadius: getComputedStyle(el).borderRadius };
   }, []);
 
+  const activeElRef = useRef<HTMLElement | null>(null);
+
+  usePointer((x, y) => {
+    targetRef.current.x = x;
+    targetRef.current.y = y;
+    const el = document.elementFromPoint(x, y) as HTMLElement | null;
+    inPlaygroundRef.current = !!el?.closest("#playground");
+    if (activeElRef.current && stateRef.current.mode !== "dot") {
+      stateRef.current.rect = activeElRef.current.getBoundingClientRect();
+    }
+  });
+
   useEffect(() => {
-    let activeEl: HTMLElement | null = null;
-
     const updateActiveRect = () => {
-      if (activeEl && stateRef.current.mode !== "dot") {
-        stateRef.current.rect = activeEl.getBoundingClientRect();
+      if (activeElRef.current && stateRef.current.mode !== "dot") {
+        stateRef.current.rect = activeElRef.current.getBoundingClientRect();
       }
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      targetRef.current.x = e.clientX;
-      targetRef.current.y = e.clientY;
-      inPlaygroundRef.current = !!(e.target as HTMLElement).closest("#playground");
-      updateActiveRect();
     };
 
     const handleScroll = () => {
@@ -163,18 +168,18 @@ export default function BlobCursor() {
         const state = detectMode(el);
         stateRef.current = state;
         if (state.mode === "pill") {
-          activeEl = el.closest("[data-cursor='pill']") as HTMLElement | null;
+          activeElRef.current = el.closest("[data-cursor='pill']") as HTMLElement | null;
         } else if (state.mode === "underline") {
-          activeEl = (el.closest("[data-cursor='underline']") || el.closest("h3, h2") || el.closest("a[href], button")) as HTMLElement | null;
+          activeElRef.current = (el.closest("[data-cursor='underline']") || el.closest("h3, h2") || el.closest("a[href], button")) as HTMLElement | null;
         } else if (state.mode !== "dot") {
-          activeEl = el.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
+          activeElRef.current = el.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
         } else {
-          activeEl = null;
+          activeElRef.current = null;
         }
         inPlaygroundRef.current = !!el.closest("#playground");
       } else {
         stateRef.current = { mode: "dot", rect: null, borderRadius: "" };
-        activeEl = null;
+        activeElRef.current = null;
       }
       updateActiveRect();
     };
@@ -183,16 +188,14 @@ export default function BlobCursor() {
       const target = e.target as HTMLElement;
       const state = detectMode(target);
       stateRef.current = state;
-      // Track the element for rect updates — for pill mode, track the data-cursor element, not the link ancestor
       if (state.mode === "pill") {
-        activeEl = target.closest("[data-cursor='pill']") as HTMLElement | null;
+        activeElRef.current = target.closest("[data-cursor='pill']") as HTMLElement | null;
       } else if (state.mode === "underline") {
-        // Track the actual underlined element (title, link text), not the card ancestor
-        activeEl = (target.closest("[data-cursor='underline']") || target.closest("h3, h2") || target.closest("a[href], button")) as HTMLElement | null;
+        activeElRef.current = (target.closest("[data-cursor='underline']") || target.closest("h3, h2") || target.closest("a[href], button")) as HTMLElement | null;
       } else if (state.mode !== "dot") {
-        activeEl = target.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
+        activeElRef.current = target.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
       } else {
-        activeEl = null;
+        activeElRef.current = null;
       }
     };
 
@@ -200,16 +203,14 @@ export default function BlobCursor() {
       const related = e.relatedTarget as HTMLElement | null;
       if (!related || !related.closest("a[href], button, [role='button']")) {
         stateRef.current = { mode: "dot", rect: null, borderRadius: "" };
-        activeEl = null;
+        activeElRef.current = null;
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseover", handleMouseOver);
     window.addEventListener("mouseout", handleMouseOut);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
       window.removeEventListener("mouseout", handleMouseOut);
       window.removeEventListener("scroll", handleScroll);
@@ -313,10 +314,20 @@ export default function BlobCursor() {
           let delta = targetAngle - arrowRotRef.current;
           delta = ((delta + 540) % 360) - 180;
           arrowRotRef.current += delta * morphLerp;
+
+          // Scale arrow up as cursor gets closer to target
+          const dist = Math.sqrt((btnCx - c.x) ** 2 + (btnCy - c.y) ** 2);
+          const maxDist = 400;
+          const proximity = Math.max(0, 1 - dist / maxDist);
+          const targetSize = 1 + proximity * 1; // 1x → 2x
+          arrowSizeRef.current += (targetSize - arrowSizeRef.current) * 0.08;
+        } else {
+          arrowSizeRef.current += (1 - arrowSizeRef.current) * 0.08;
         }
 
         const s = arrowScaleRef.current;
-        arrowRef.current.style.transform = `translate(${c.x}px, ${c.y}px) translate(-50%, -50%) rotate(${arrowRotRef.current}deg) scale(${s})`;
+        const sz = arrowSizeRef.current;
+        arrowRef.current.style.transform = `translate(${c.x}px, ${c.y}px) translate(-50%, -50%) rotate(${arrowRotRef.current}deg) scale(${s * sz})`;
         arrowRef.current.style.opacity = String(s);
       }
 

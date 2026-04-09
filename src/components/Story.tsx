@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { usePointer } from "./PointerContext";
 
 const ease = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
@@ -75,34 +77,29 @@ export default function Story() {
   }, [svgKey]);
 
   // 3D tilt tracks cursor globally when image+border is in viewport
+  const inViewRef = useRef(false);
   useEffect(() => {
     const el = borderRef.current;
     if (!el) return;
-    let inView = false;
-
     const observer = new IntersectionObserver(
-      ([entry]) => { inView = entry.isIntersecting; },
+      ([entry]) => { inViewRef.current = entry.isIntersecting; },
       { threshold: 0.1 }
     );
     observer.observe(el);
-
-    const onMove = (e: MouseEvent) => {
-      if (!inView) return;
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const x = (e.clientX - cx) / (window.innerWidth / 2);
-      const y = (e.clientY - cy) / (window.innerHeight / 2);
-      const clamp = (v: number) => Math.max(-1, Math.min(1, v));
-      el.style.transform = `perspective(600px) rotateX(${-clamp(y) * 2}deg) rotateY(${clamp(x) * 2}deg) scale3d(1.002, 1.002, 1.002)`;
-    };
-
-    window.addEventListener("mousemove", onMove);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
+
+  usePointer((px, py) => {
+    const el = borderRef.current;
+    if (!el || !inViewRef.current) return;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const x = (px - cx) / (window.innerWidth / 2);
+    const y = (py - cy) / (window.innerHeight / 2);
+    const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+    el.style.transform = `perspective(600px) rotateX(${-clamp(y) * 2}deg) rotateY(${clamp(x) * 2}deg) scale3d(1.002, 1.002, 1.002)`;
+  });
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];

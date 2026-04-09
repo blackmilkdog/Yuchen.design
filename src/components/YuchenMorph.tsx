@@ -10,6 +10,7 @@ export default function YuchenMorph() {
   const textRef = useRef<HTMLSpanElement>(null);
   const sizerRef = useRef<HTMLSpanElement>(null);
   const animating = useRef(false);
+  const queued = useRef<boolean | null>(null);
 
   // measure and animate width on text change
   useEffect(() => {
@@ -26,15 +27,12 @@ export default function YuchenMorph() {
     });
   }, [displayText]);
 
-  const trigger = useCallback((toChinese: boolean) => {
-    setChinese(toChinese);
+  const runBlur = useCallback((toChinese: boolean) => {
     const el = textRef.current;
-    if (!el || animating.current) return;
+    if (!el) return;
     animating.current = true;
-
     const nextText = toChinese ? "雨晨" : "Yuchen";
 
-    // blur up smoothly, swap text at peak, then deblur
     animate(0, 4, {
       duration: 0.12,
       ease: [0.4, 0, 1, 1],
@@ -52,11 +50,26 @@ export default function YuchenMorph() {
           onComplete: () => {
             el.style.filter = "blur(0px)";
             animating.current = false;
+            // If a trigger was queued while animating, replay it
+            if (queued.current !== null) {
+              const next = queued.current;
+              queued.current = null;
+              runBlur(next);
+            }
           },
         });
       },
     });
   }, []);
+
+  const trigger = useCallback((toChinese: boolean) => {
+    setChinese(toChinese);
+    if (animating.current) {
+      queued.current = toChinese;
+      return;
+    }
+    runBlur(toChinese);
+  }, [runBlur]);
 
   return (
     <span

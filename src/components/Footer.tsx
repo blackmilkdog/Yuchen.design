@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import FooterDog from "./FooterDog";
 
@@ -14,14 +14,13 @@ export default function Footer() {
   const boneScale = useSpring(boneScaleRaw, { stiffness: 200, damping: 20 });
   const pointerPos = useRef({ x: 0, y: 0 });
 
-  // Track real pointer position since Framer info.point is element position
-  useEffect(() => {
-    const track = (e: PointerEvent) => {
-      pointerPos.current = { x: e.clientX, y: e.clientY };
-    };
-    window.addEventListener("pointermove", track);
-    return () => window.removeEventListener("pointermove", track);
-  }, []);
+  // Spring-based drag position so bone trails the cursor
+  const dragXRaw = useMotionValue(0);
+  const dragYRaw = useMotionValue(0);
+  const dragX = useSpring(dragXRaw, { stiffness: 80, damping: 14 });
+  const dragY = useSpring(dragYRaw, { stiffness: 80, damping: 14 });
+  const dragOrigin = useRef({ x: 0, y: 0 });
+
 
   const handleDragEnd = useCallback(() => {
     setBoneDragging(false);
@@ -138,16 +137,21 @@ export default function Footer() {
       {boneVisible && (
         <motion.div
           ref={boneRef}
-          drag
-          dragSnapToOrigin
-          onDragStart={() => {
+          onPointerDown={(e) => {
+            e.preventDefault();
+            (e.target as HTMLElement).setPointerCapture(e.pointerId);
+            const rect = boneRef.current!.getBoundingClientRect();
+            dragOrigin.current = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
             setBoneDragging(true);
           }}
-          onDrag={() => {
-            const { x, y } = pointerPos.current;
+          onPointerMove={(e) => {
+            if (!boneDragging) return;
+            const { x, y } = { x: e.clientX, y: e.clientY };
+            pointerPos.current = { x, y };
+            dragXRaw.set(x - dragOrigin.current.x);
+            dragYRaw.set(y - dragOrigin.current.y);
             const progress = Math.max(0, Math.min(1, x / window.innerWidth));
             window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: progress }));
-            // Scale bone up as it gets closer to the dog
             const dogEl = document.querySelector("[data-cursor='dog']");
             if (dogEl) {
               const rect = dogEl.getBoundingClientRect();
@@ -159,16 +163,19 @@ export default function Footer() {
               boneScaleRaw.set(1 + proximity * 1.2);
             }
           }}
-          onDragEnd={() => {
+          onPointerUp={() => {
             window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: 0 }));
             boneScaleRaw.set(1);
             handleDragEnd();
+            setBoneDragging(false);
+            dragXRaw.set(0);
+            dragYRaw.set(0);
           }}
           onHoverStart={() => window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: 0.3 }))}
           onHoverEnd={() => { if (!boneDragging) window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: 0 })); }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ scale: boneScale }}
+          style={{ scale: boneScale, x: dragX, y: dragY }}
           data-cursor="bone"
           className="absolute bottom-4 left-8 z-20 cursor-grab select-none text-2xl active:cursor-grabbing lg:left-16"
           title="Drag me to the dog!"

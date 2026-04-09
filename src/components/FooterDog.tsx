@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { usePointer } from "./PointerContext";
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -53,51 +55,57 @@ function GooglyEye({
             stroke="rgba(0,0,0,0.2)"
             strokeWidth="2"
           />
-          {/* Main pupil - always black */}
-          <motion.circle
-            cx={cx}
-            cy={cy}
-            r={r * 0.55}
-            fill="#111"
-            style={{ x: pupilX, y: pupilY }}
-          />
-          {/* Fancy details - fade in on hover */}
-          <motion.circle
-            cx={cx}
-            cy={cy}
-            r={r * 0.45}
-            fill="#3b2f1a"
-            animate={{ opacity: fancy ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-            style={{ x: pupilX, y: pupilY }}
-          />
-          <motion.circle
-            cx={cx}
-            cy={cy}
-            r={r * 0.25}
-            fill="#000"
-            animate={{ opacity: fancy ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-            style={{ x: pupilX, y: pupilY }}
-          />
-          <motion.circle
-            cx={cx + r * 0.15}
-            cy={cy - r * 0.15}
-            r={r * 0.18}
-            fill="white"
-            animate={{ opacity: fancy ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-            style={{ x: pupilX, y: pupilY }}
-          />
-          <motion.circle
-            cx={cx - r * 0.2}
-            cy={cy + r * 0.15}
-            r={r * 0.08}
-            fill="white"
-            animate={{ opacity: fancy ? 0.6 : 0 }}
-            transition={{ duration: 0.4 }}
-            style={{ x: pupilX, y: pupilY }}
-          />
+          <motion.g
+            style={{ transformOrigin: `${cx}px ${cy}px` }}
+            animate={fancy ? { rotate: [0, 15, -15, 0] } : { rotate: 0 }}
+            transition={fancy ? { duration: 0.4, repeat: Infinity, ease: "easeInOut" } : { duration: 0.2 }}
+          >
+            {/* Main pupil - always black */}
+            <motion.circle
+              cx={cx}
+              cy={cy}
+              r={r * 0.55}
+              fill="#111"
+              style={{ x: pupilX, y: pupilY }}
+            />
+            {/* Fancy details - fade in on hover */}
+            <motion.circle
+              cx={cx}
+              cy={cy}
+              r={r * 0.45}
+              fill="#3b2f1a"
+              animate={{ opacity: fancy ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              style={{ x: pupilX, y: pupilY }}
+            />
+            <motion.circle
+              cx={cx}
+              cy={cy}
+              r={r * 0.25}
+              fill="#000"
+              animate={{ opacity: fancy ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              style={{ x: pupilX, y: pupilY }}
+            />
+            <motion.circle
+              cx={cx + r * 0.15}
+              cy={cy - r * 0.15}
+              r={r * 0.18}
+              fill="white"
+              animate={{ opacity: fancy ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              style={{ x: pupilX, y: pupilY }}
+            />
+            <motion.circle
+              cx={cx - r * 0.2}
+              cy={cy + r * 0.15}
+              r={r * 0.08}
+              fill="white"
+              animate={{ opacity: fancy ? 0.6 : 0 }}
+              transition={{ duration: 0.4 }}
+              style={{ x: pupilX, y: pupilY }}
+            />
+          </motion.g>
         </>
       )}
     </motion.g>
@@ -179,25 +187,19 @@ export default function FooterDog() {
     };
   }, [spawnParticles]);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      // Normalize relative to dog position (bottom-right corner)
-      const nx = e.clientX / window.innerWidth - 0.9;
-      const ny = e.clientY / window.innerHeight - 0.9;
-      mouseX.set(nx * 6);
-      mouseY.set(ny * 4);
-      // Very sensitive pupil movement
-      const px = nx * 50;
-      const py = ny * 40;
-      const dist = Math.sqrt(px * px + py * py);
-      const maxDist = 25;
-      const scale = dist > maxDist ? maxDist / dist : 1;
-      pupilRawX.set(px * scale);
-      pupilRawY.set(py * scale);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY, pupilRawX, pupilRawY]);
+  usePointer((cx, cy) => {
+    const nx = cx / window.innerWidth - 0.9;
+    const ny = cy / window.innerHeight - 0.9;
+    mouseX.set(nx * 6);
+    mouseY.set(ny * 4);
+    const px = nx * 50;
+    const py = ny * 40;
+    const dist = Math.sqrt(px * px + py * py);
+    const maxDist = 25;
+    const scale = dist > maxDist ? maxDist / dist : 1;
+    pupilRawX.set(px * scale);
+    pupilRawY.set(py * scale);
+  });
 
   return (
     <motion.div
