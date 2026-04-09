@@ -1,52 +1,46 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
+import { motion } from "framer-motion";
 
 export default function YuchenMorph() {
   const [chinese, setChinese] = useState(false);
+  const [displayText, setDisplayText] = useState("Yuchen");
+  const [blurKey, setBlurKey] = useState(0);
   const containerRef = useRef<HTMLSpanElement>(null);
 
-  const handleMouseEnter = useCallback(() => setChinese(true), []);
-  const handleMouseLeave = useCallback(() => setChinese(false), []);
+  const trigger = useCallback(
+    (toChinese: boolean) => {
+      setChinese(toChinese);
+      // kick a new blur→deblur cycle
+      setBlurKey((k) => k + 1);
+      // swap text halfway through the blur
+      setTimeout(() => {
+        setDisplayText(toChinese ? "雨晨" : "Yuchen");
+      }, 80);
+    },
+    []
+  );
 
   return (
     <span
       ref={containerRef}
       data-cursor="underline"
       className="relative inline-block cursor-pointer"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => trigger(true)}
+      onMouseLeave={() => trigger(false)}
     >
       <span className="invisible">{chinese ? "雨晨" : "Yuchen"}</span>
 
-      <AnimatePresence mode="wait">
-        {!chinese ? (
-          <motion.span
-            key="english"
-            initial={{ opacity: 0, filter: "blur(8px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, filter: "blur(8px)" }}
-            transition={{ duration: 0.15, ease }}
-            className="absolute inset-0 bg-gradient-to-r from-accent via-[#ffb366] to-accent bg-clip-text text-transparent"
-          >
-            Yuchen
-          </motion.span>
-        ) : (
-          <motion.span
-            key="chinese"
-            initial={{ opacity: 0, filter: "blur(8px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, filter: "blur(8px)" }}
-            transition={{ duration: 0.15, ease }}
-            className="absolute inset-0 bg-gradient-to-r from-accent via-[#ffb366] to-accent bg-clip-text text-transparent"
-          >
-            雨晨
-          </motion.span>
-        )}
-      </AnimatePresence>
+      <motion.span
+        key={blurKey}
+        initial={{ filter: "blur(10px)" }}
+        animate={{ filter: "blur(0px)" }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute inset-0 bg-gradient-to-r from-accent via-[#ffb366] to-accent bg-clip-text text-transparent"
+      >
+        {displayText}
+      </motion.span>
     </span>
   );
 }
