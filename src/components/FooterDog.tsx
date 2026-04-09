@@ -20,7 +20,7 @@ function GooglyEye({
   cx: number;
   cy: number;
   r: number;
-  scale: number;
+  scale: ReturnType<typeof useSpring>;
   fancy: boolean;
   closed: boolean;
 }) {
@@ -29,9 +29,7 @@ function GooglyEye({
 
   return (
     <motion.g
-      animate={{ scale }}
-      transition={{ type: "spring", stiffness: 120, damping: 14 }}
-      style={{ transformOrigin: `${cx}px ${cy}px` }}
+      style={{ transformOrigin: `${cx}px ${cy}px`, scale }}
     >
       {closed ? (
         <>
@@ -120,7 +118,9 @@ type Particle = {
 let particleId = 0;
 
 export default function FooterDog() {
-  const [eyeScale, setEyeScale] = useState(1);
+  const eyeScaleRaw = useMotionValue(1);
+  const eyeScale = useSpring(eyeScaleRaw, { stiffness: 120, damping: 14 });
+  const [fancy, setFancy] = useState(false);
   const [eyesClosed, setEyesClosed] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
 
@@ -158,9 +158,11 @@ export default function FooterDog() {
       const progress = (e as CustomEvent).detail as number; // 0 to 1
       // Scale from 1.0 (left) to 2.2 (right), with a minimum bump of 1.3 when any value > 0
       if (progress <= 0) {
-        setEyeScale(1);
+        eyeScaleRaw.set(1);
+        setFancy(false);
       } else {
-        setEyeScale(1.3 + progress * 0.5);
+        eyeScaleRaw.set(1.3 + progress * 0.5);
+        setFancy(true);
       }
     };
     const handleBoneDrop = () => {
@@ -205,7 +207,7 @@ export default function FooterDog() {
       transition={{ duration: 1, delay: 0.3, ease }}
       style={{ x: springX, y: springY }}
       data-cursor="dog"
-      className="footer-dog absolute right-[-60px] bottom-[-20px] z-[9999] w-[160px] -rotate-[25deg] overflow-hidden sm:w-[200px] lg:w-[260px]"
+      className="footer-dog absolute right-[-60px] bottom-[-20px] z-20 w-[160px] -rotate-[25deg] overflow-hidden sm:w-[200px] lg:w-[260px]"
     >
       <img
         src="/images/dog.png"
@@ -218,8 +220,8 @@ export default function FooterDog() {
         viewBox="0 0 1000 1000"
         preserveAspectRatio="xMidYMid slice"
       >
-        <GooglyEye pupilX={pupilX} pupilY={pupilY} cx={325} cy={285} r={85} scale={eyeScale} fancy={eyeScale > 1} closed={eyesClosed} />
-        <GooglyEye pupilX={pupilX} pupilY={pupilY} cx={560} cy={345} r={85} scale={eyeScale} fancy={eyeScale > 1} closed={eyesClosed} />
+        <GooglyEye pupilX={pupilX} pupilY={pupilY} cx={325} cy={285} r={85} scale={eyeScale} fancy={fancy} closed={eyesClosed} />
+        <GooglyEye pupilX={pupilX} pupilY={pupilY} cx={560} cy={345} r={85} scale={eyeScale} fancy={fancy} closed={eyesClosed} />
       </svg>
 
       {/* Sparkle / heart particles on bone drop */}

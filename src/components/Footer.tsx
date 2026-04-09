@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import FooterDog from "./FooterDog";
 
 const ease = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -10,6 +10,8 @@ export default function Footer() {
   const boneRef = useRef<HTMLDivElement>(null);
   const [boneDragging, setBoneDragging] = useState(false);
   const [boneVisible, setBoneVisible] = useState(true);
+  const boneScaleRaw = useMotionValue(1);
+  const boneScale = useSpring(boneScaleRaw, { stiffness: 200, damping: 20 });
   const pointerPos = useRef({ x: 0, y: 0 });
 
   // Track real pointer position since Framer info.point is element position
@@ -142,21 +144,33 @@ export default function Footer() {
             setBoneDragging(true);
           }}
           onDrag={() => {
-            const { x } = pointerPos.current;
+            const { x, y } = pointerPos.current;
             const progress = Math.max(0, Math.min(1, x / window.innerWidth));
             window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: progress }));
+            // Scale bone up as it gets closer to the dog
+            const dogEl = document.querySelector("[data-cursor='dog']");
+            if (dogEl) {
+              const rect = dogEl.getBoundingClientRect();
+              const dogCx = rect.left + rect.width / 2;
+              const dogCy = rect.top + rect.height / 2;
+              const dist = Math.sqrt((x - dogCx) ** 2 + (y - dogCy) ** 2);
+              const maxDist = 400;
+              const proximity = Math.max(0, 1 - dist / maxDist);
+              boneScaleRaw.set(1 + proximity * 1.2);
+            }
           }}
           onDragEnd={() => {
             window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: 0 }));
+            boneScaleRaw.set(1);
             handleDragEnd();
           }}
           onHoverStart={() => window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: 0.3 }))}
           onHoverEnd={() => { if (!boneDragging) window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: 0 })); }}
-          whileDrag={{ scale: 1.2 }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
+          style={{ scale: boneScale }}
           data-cursor="bone"
-          className="absolute bottom-4 left-4 z-[9999] cursor-grab select-none text-2xl active:cursor-grabbing"
+          className="absolute bottom-4 left-4 z-20 cursor-grab select-none text-2xl active:cursor-grabbing"
           title="Drag me to the dog!"
         >
           <motion.span
