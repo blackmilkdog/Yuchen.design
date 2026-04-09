@@ -1,4 +1,4 @@
-"use client";  //deploy
+"use client";  
 
 import { useEffect, useRef, useCallback, useState } from "react";
 import { usePointer } from "./PointerContext";
