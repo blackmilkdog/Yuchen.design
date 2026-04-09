@@ -219,8 +219,7 @@ export default function Playground() {
         {/* Film grain texture – follows cursor */}
         <div
           ref={grainRef}
-          className="pointer-events-none absolute -inset-8 opacity-[0.35] mix-blend-overlay transition-transform duration-300 ease-out"
-          style={{ backgroundImage: "url('/images/grain-texture.png')", backgroundSize: "256px 256px", backgroundRepeat: "repeat" }}
+          className="pointer-events-none absolute -inset-8 opacity-[0.35] mix-blend-overlay transition-transform duration-300 ease-out animate-grain"
         />
 
         <div className="relative z-10 mx-auto max-w-[1180px]">
