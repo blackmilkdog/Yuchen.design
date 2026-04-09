@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -45,7 +45,7 @@ const projects: Project[] = [
   },
 ];
 
-function PlaygroundCard({ project, index }: { project: Project; index: number }) {
+const PlaygroundCard = React.memo(function PlaygroundCard({ project, index }: { project: Project; index: number }) {
   const cardRef = useRef<HTMLAnchorElement>(null);
   const shimmerRef = useRef<HTMLDivElement>(null);
 
@@ -162,7 +162,7 @@ function PlaygroundCard({ project, index }: { project: Project; index: number })
       </div>
     </motion.a>
   );
-}
+});
 
 export default function Playground() {
   const grainRef = useRef<HTMLDivElement>(null);

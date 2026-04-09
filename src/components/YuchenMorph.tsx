@@ -69,6 +69,8 @@ export default function YuchenMorph() {
       return;
     }
     runBlur(toChinese);
+    // Notify header to mirror the animation
+    window.dispatchEvent(new CustomEvent("yuchen-hover", { detail: { chinese: toChinese } }));
   }, [runBlur]);
 
   return (

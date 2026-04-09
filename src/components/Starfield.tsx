@@ -111,7 +111,8 @@ export default function Starfield() {
 
       const t = time * 0.001;
 
-      // Draw stars
+      // Draw stars — use globalAlpha to avoid string allocation per star
+      ctx.fillStyle = "rgb(255, 255, 255)";
       for (const star of stars) {
         // Parallax: deeper stars (lower z) move slower
         const parallax = star.z * 0.35;
@@ -129,19 +130,22 @@ export default function Starfield() {
           0.5 + 0.5 * Math.sin(t * star.twinkleSpeed + star.twinkleOffset);
         const alpha = star.opacity * (0.4 + twinkle * 0.6);
 
+        ctx.globalAlpha = globalAlpha * alpha;
         ctx.beginPath();
         ctx.arc(drawX, drawY, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         ctx.fill();
 
         // Subtle warm glow on brighter stars
         if (star.z > 0.6) {
+          ctx.globalAlpha = globalAlpha * alpha * 0.05;
+          ctx.fillStyle = "rgb(255, 200, 130)";
           ctx.beginPath();
           ctx.arc(drawX, drawY, star.size * 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 200, 130, ${alpha * 0.05})`;
           ctx.fill();
+          ctx.fillStyle = "rgb(255, 255, 255)";
         }
       }
+      ctx.globalAlpha = globalAlpha;
 
       // Meteor spawning
       meteorTimer -= 16.67 * dt;
@@ -172,13 +176,16 @@ export default function Starfield() {
               : 1;
 
         const alpha = m.opacity * fade;
-        const tailX = m.x - (m.vx / Math.sqrt(m.vx * m.vx + m.vy * m.vy)) * m.length * fade;
-        const tailY = m.y - (m.vy / Math.sqrt(m.vx * m.vx + m.vy * m.vy)) * m.length * fade;
+        const invLen = 1 / Math.sqrt(m.vx * m.vx + m.vy * m.vy);
+        const tailX = m.x - m.vx * invLen * m.length * fade;
+        const tailY = m.y - m.vy * invLen * m.length * fade;
 
+        // Use globalAlpha for the overall meteor opacity, static color stops
+        ctx.globalAlpha = globalAlpha * alpha;
         const grad = ctx.createLinearGradient(tailX, tailY, m.x, m.y);
-        grad.addColorStop(0, `rgba(255, 255, 255, 0)`);
-        grad.addColorStop(0.6, `rgba(255, 220, 170, ${alpha * 0.3})`);
-        grad.addColorStop(1, `rgba(255, 255, 255, ${alpha})`);
+        grad.addColorStop(0, "rgba(255, 255, 255, 0)");
+        grad.addColorStop(0.6, "rgba(255, 220, 170, 0.3)");
+        grad.addColorStop(1, "rgb(255, 255, 255)");
 
         ctx.beginPath();
         ctx.moveTo(tailX, tailY);
@@ -189,9 +196,9 @@ export default function Starfield() {
         ctx.stroke();
 
         // Bright head
+        ctx.fillStyle = "rgb(255, 255, 255)";
         ctx.beginPath();
         ctx.arc(m.x, m.y, 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         ctx.fill();
       }
 

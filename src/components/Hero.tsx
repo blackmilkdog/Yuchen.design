@@ -28,7 +28,7 @@ export default function Hero() {
       section.style.setProperty("--gx", `${gx}px`);
       section.style.setProperty("--gy", `${gy}px`);
     };
-    section.addEventListener("mousemove", handleMove);
+    section.addEventListener("mousemove", handleMove, { passive: true });
     return () => section.removeEventListener("mousemove", handleMove);
   }, []);
 

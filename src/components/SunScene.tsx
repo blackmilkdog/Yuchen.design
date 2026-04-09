@@ -254,34 +254,29 @@ function DustParticles() {
 
   useFrame(({ clock }) => {
     uniforms.uTime.value = clock.getElapsedTime();
-
-    // gently drift particles
-    const geo = ref.current.geometry;
-    const pos = geo.attributes.position as THREE.BufferAttribute;
-    const arr = pos.array as Float32Array;
-    const t = clock.getElapsedTime();
-
-    for (let i = 0; i < count; i++) {
-      const baseY = positions[i * 3 + 1];
-      arr[i * 3 + 1] = baseY + Math.sin(t * speeds[i] + phases[i]) * 0.3;
-      arr[i * 3]     = positions[i * 3] + Math.sin(t * speeds[i] * 0.7 + phases[i]) * 0.15;
-    }
-    pos.needsUpdate = true;
   });
 
   const vertexShader = /* glsl */ `
     attribute float aSize;
+    attribute float aSpeed;
+    attribute float aPhase;
+    attribute vec3 aBasePosition;
     uniform float uTime;
     varying float vAlpha;
 
     void main(){
-      vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+      // GPU-side drift (replaces CPU-side per-frame buffer update)
+      vec3 pos = aBasePosition;
+      pos.y += sin(uTime * aSpeed + aPhase) * 0.3;
+      pos.x += sin(uTime * aSpeed * 0.7 + aPhase) * 0.15;
+
+      vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
       gl_PointSize = aSize * (80.0 / -mvPos.z);
       gl_Position  = projectionMatrix * mvPos;
 
       /* twinkle */
-      float dist = length(position.xy - vec2(0.0, 3.5));
-      vAlpha = smoothstep(8.0, 1.0, dist) * (0.4 + 0.6 * sin(uTime * 2.0 + position.x * 10.0) * 0.5 + 0.5);
+      float dist = length(pos.xy - vec2(0.0, 3.5));
+      vAlpha = smoothstep(8.0, 1.0, dist) * (0.4 + 0.6 * sin(uTime * 2.0 + pos.x * 10.0) * 0.5 + 0.5);
     }
   `;
 
@@ -302,13 +297,31 @@ function DustParticles() {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          args={[positions.slice(), 3]}
+          args={[positions, 3]}
+          count={count}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-aBasePosition"
+          args={[positions, 3]}
           count={count}
           itemSize={3}
         />
         <bufferAttribute
           attach="attributes-aSize"
           args={[sizes, 1]}
+          count={count}
+          itemSize={1}
+        />
+        <bufferAttribute
+          attach="attributes-aSpeed"
+          args={[speeds, 1]}
+          count={count}
+          itemSize={1}
+        />
+        <bufferAttribute
+          attach="attributes-aPhase"
+          args={[phases, 1]}
           count={count}
           itemSize={1}
         />

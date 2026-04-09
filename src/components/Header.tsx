@@ -1,10 +1,77 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, animate } from "framer-motion";
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export default function Header() {
+  const [displayName, setDisplayName] = useState("Yuchen Zhang");
+  const nameRef = useRef<HTMLSpanElement>(null);
+  const starRef = useRef<SVGSVGElement>(null);
+  const animatingRef = useRef(false);
+  const queuedRef = useRef<boolean | null>(null);
+
+  const runBlur = useCallback((toChinese: boolean) => {
+    const nameEl = nameRef.current;
+    const starEl = starRef.current;
+    if (!nameEl || !starEl) return;
+    animatingRef.current = true;
+    const nextName = toChinese ? "张雨晨" : "Yuchen Zhang";
+
+    // Blur-in phase
+    animate(0, 4, {
+      duration: 0.12,
+      ease: [0.4, 0, 1, 1],
+      onUpdate: (v) => {
+        nameEl.style.filter = `blur(${v}px)`;
+      },
+      onComplete: () => {
+        setDisplayName(nextName);
+        // Blur-out phase
+        animate(4, 0, {
+          duration: 0.18,
+          ease: [0, 0, 0.2, 1],
+          onUpdate: (v) => {
+            nameEl.style.filter = `blur(${v}px)`;
+          },
+          onComplete: () => {
+            nameEl.style.filter = "blur(0px)";
+            animatingRef.current = false;
+            if (queuedRef.current !== null) {
+              const next = queuedRef.current;
+              queuedRef.current = null;
+              runBlur(next);
+            }
+          },
+        });
+      },
+    });
+
+    // Lerp star closer / back
+    const targetX = toChinese ? 4 : 0;
+    animate(toChinese ? 0 : 4, targetX, {
+      duration: 0.3,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (v) => {
+        starEl.style.transform = `translateX(${v}px)`;
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { chinese } = (e as CustomEvent).detail;
+      if (animatingRef.current) {
+        queuedRef.current = chinese;
+        return;
+      }
+      runBlur(chinese);
+    };
+    window.addEventListener("yuchen-hover", handler);
+    return () => window.removeEventListener("yuchen-hover", handler);
+  }, [runBlur]);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       {/* Top-to-bottom drop shadow */}
@@ -24,8 +91,9 @@ export default function Header() {
         className="relative flex items-center justify-between px-6 py-5 sm:px-10 lg:px-14"
       >
         <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="flex items-center gap-2 font-serif text-[22px] tracking-[-0.5px] text-white sm:text-[26px]">
-          Yuchen Zhang
+          <span ref={nameRef}>{displayName}</span>
           <svg
+            ref={starRef}
             width="16"
             height="16"
             viewBox="0 0 16 16"

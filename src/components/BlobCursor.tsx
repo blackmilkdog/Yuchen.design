@@ -26,6 +26,7 @@ export default function BlobCursor() {
   const arrowSizeRef = useRef(1);
   const inPlaygroundRef = useRef(false);
   const colorRef = useRef(0); // 0 = orange, 1 = white
+  const lastColorRef = useRef({ g: 153, b: 85 }); // cache to skip redundant DOM writes
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
@@ -289,9 +290,8 @@ export default function BlobCursor() {
       colorRef.current += (targetColor - colorRef.current) * morphLerp;
       const t = colorRef.current;
       // Orange: rgb(255,153,85) → White: rgb(255,255,255)
-      const r = Math.round(255);
-      const g = Math.round(153 + (255 - 153) * t);
-      const b = Math.round(85 + (255 - 85) * t);
+      const g = Math.round(153 + 102 * t);
+      const b = Math.round(85 + 170 * t);
       const a = 0.6 + 0.4 * t; // outer alpha: 0.6 → 1.0
 
       // Show/hide arrow for look mode
@@ -337,8 +337,13 @@ export default function BlobCursor() {
         blobRef.current.style.height = `${c.h}px`;
         blobRef.current.style.borderRadius = `${c.r}px`;
         blobRef.current.style.opacity = String(c.opacity);
-        blobRef.current.style.background = `radial-gradient(circle, rgb(${r},${g},${b}) 0%, rgb(${r},${g},${b}) 60%, rgba(${r},${g},${b},${a.toFixed(2)}) 100%)`;
-        blobRef.current.style.boxShadow = `0 0 16px 4px rgba(${r},${g},${b},0.25)`;
+        // Only rebuild gradient/shadow strings when color actually changes
+        if (g !== lastColorRef.current.g || b !== lastColorRef.current.b) {
+          lastColorRef.current.g = g;
+          lastColorRef.current.b = b;
+          blobRef.current.style.background = `radial-gradient(circle, rgb(255,${g},${b}) 0%, rgb(255,${g},${b}) 60%, rgba(255,${g},${b},${a.toFixed(2)}) 100%)`;
+          blobRef.current.style.boxShadow = `0 0 16px 4px rgba(255,${g},${b},0.25)`;
+        }
       }
 
       rafRef.current = requestAnimationFrame(animate);

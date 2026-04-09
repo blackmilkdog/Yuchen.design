@@ -13,6 +13,7 @@ export default function Footer() {
   const boneScaleRaw = useMotionValue(1);
   const boneScale = useSpring(boneScaleRaw, { stiffness: 200, damping: 20 });
   const pointerPos = useRef({ x: 0, y: 0 });
+  const lastDragUpdate = useRef(0);
 
   // Spring-based drag position so bone trails the cursor
   const dragXRaw = useMotionValue(0);
@@ -150,6 +151,10 @@ export default function Footer() {
             pointerPos.current = { x, y };
             dragXRaw.set(x - dragOrigin.current.x);
             dragYRaw.set(y - dragOrigin.current.y);
+            // Throttle expensive operations (CustomEvent + querySelector) to ~30fps
+            const now = performance.now();
+            if (now - lastDragUpdate.current < 33) return;
+            lastDragUpdate.current = now;
             const progress = Math.max(0, Math.min(1, x / window.innerWidth));
             window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: progress }));
             const dogEl = document.querySelector("[data-cursor='dog']");

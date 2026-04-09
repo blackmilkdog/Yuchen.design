@@ -17,7 +17,7 @@ const values = [
 ];
 
 const hobbyText =
-  "▲ SNOWBOARDING  ∿ SURFING  ✈ TRAVELING  ⊞ CITY WALKING  ★ SPACE AESTHETICS  ".repeat(10);
+  "▲ SNOWBOARDING  ∿ SURFING  ✈ TRAVELING  ⊞ CITY WALKING  ★ SPACE AESTHETICS  ".repeat(4);
 
 export default function Story() {
   const [activeTab, setActiveTab] = useState<Tab>("My Vision");
@@ -297,10 +297,12 @@ export default function Story() {
                 <div
                   className="relative aspect-[1/1] w-full overflow-hidden rounded-[16px] sm:rounded-[28px] lg:rounded-[36px]"
                 >
-                  <img
+                  <Image
                     src="/images/naibaov2.jpeg"
                     alt="milkdog"
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 635px"
                   />
                   {/* Orange overlay */}
                   <div className="pointer-events-none absolute inset-0 bg-accent/20 mix-blend-multiply" />

@@ -211,9 +211,11 @@ export default function FooterDog() {
       data-cursor="dog"
       className="footer-dog absolute right-[-60px] bottom-[-20px] z-20 w-[160px] -rotate-[25deg] overflow-hidden sm:w-[200px] lg:w-[260px]"
     >
-      <img
+      <Image
         src="/images/dog.png"
         alt="Dog"
+        width={260}
+        height={260}
         className="h-full w-full object-cover"
         draggable={false}
       />
