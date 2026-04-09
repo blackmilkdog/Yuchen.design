@@ -16,8 +16,10 @@ const values = [
   { accent: "Growth", sub: "Compound skills, not titles" },
 ];
 
-const hobbyText =
-  "▲ SNOWBOARDING  ∿ SURFING  ✈ TRAVELING  ⊞ CITY WALKING  ★ SPACE AESTHETICS  ".repeat(4);
+const hobbyBase =
+  "▲ SNOWBOARDING  ∿ SURFING  ✈ TRAVELING  ⊞ CITY WALKING  ★ SPACE AESTHETICS  ";
+const HOBBY_REPEATS = 4;
+const hobbyText = hobbyBase.repeat(HOBBY_REPEATS);
 
 export default function Story() {
   const [activeTab, setActiveTab] = useState<Tab>("My Vision");
@@ -49,6 +51,16 @@ export default function Story() {
     let lastTime = performance.now();
     let raf: number;
 
+    // Measure one repeat as % of path for seamless wrapping
+    const pathEl = svg.querySelector("#hobby-frame") as SVGPathElement | null;
+    const textEl = svg.querySelector("text") as SVGTextElement | null;
+    let oneRepeatPct = 100;
+    if (pathEl && textEl) {
+      const pathLen = pathEl.getTotalLength();
+      const textLen = textEl.getComputedTextLength();
+      oneRepeatPct = (textLen / HOBBY_REPEATS / pathLen) * 100;
+    }
+
     const onScroll = () => {
       const rect = el.getBoundingClientRect();
       const center = rect.top + rect.height / 2;
@@ -60,7 +72,8 @@ export default function Story() {
       const dt = time - lastTime;
       lastTime = time;
       offset -= dt * 0.004;
-      if (offset < -500) offset += 500;
+      // Wrap at exactly one repeat length so the loop is seamless
+      if (offset < -oneRepeatPct) offset += oneRepeatPct;
       const val = `${offset + scrollExtra}%`;
       tps.forEach((tp) => tp.setAttribute("startOffset", val));
       raf = requestAnimationFrame(tick);
@@ -146,7 +159,7 @@ export default function Story() {
                   const el = sectionRefs.current[tab];
                   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
-                className={`shrink-0 rounded-full px-4 py-2 text-left font-sans text-[15px] leading-[1.4] tracking-[-0.3px] transition-all duration-300 sm:text-[16px] lg:rounded-none lg:px-0 lg:py-0 lg:text-[30px] lg:tracking-[-1.2px] ${
+                className={`shrink-0 rounded-full px-4 py-2 text-left font-sans text-[15px] leading-[1.4] tracking-[-0.3px] transition-all duration-300 sm:text-[16px] lg:w-fit lg:rounded-none lg:px-0 lg:py-0 lg:text-[30px] lg:tracking-[-1.2px] ${
                   activeTab === tab
                     ? "bg-white/10 text-accent lg:bg-transparent"
                     : "text-white/30 lg:bg-transparent"

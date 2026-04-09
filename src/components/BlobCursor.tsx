@@ -78,8 +78,10 @@ export default function BlobCursor() {
     }
     const explicitUnderline = target.closest("[data-cursor='underline']") as HTMLElement | null;
     if (explicitUnderline) {
+      const measure = explicitUnderline.querySelector("[data-cursor-measure]") as HTMLElement | null;
+      const source = measure || explicitUnderline;
       const range = document.createRange();
-      range.selectNodeContents(explicitUnderline);
+      range.selectNodeContents(source);
       return { mode: "underline", rect: range.getBoundingClientRect(), borderRadius: "" };
     }
 
@@ -171,7 +173,9 @@ export default function BlobCursor() {
         if (state.mode === "pill") {
           activeElRef.current = el.closest("[data-cursor='pill']") as HTMLElement | null;
         } else if (state.mode === "underline") {
-          activeElRef.current = (el.closest("[data-cursor='underline']") || el.closest("h3, h2") || el.closest("a[href], button")) as HTMLElement | null;
+          const underlineEl = el.closest("[data-cursor='underline']") as HTMLElement | null;
+          const measure = underlineEl?.querySelector("[data-cursor-measure]") as HTMLElement | null;
+          activeElRef.current = measure || underlineEl || (el.closest("h3, h2") || el.closest("a[href], button")) as HTMLElement | null;
         } else if (state.mode !== "dot") {
           activeElRef.current = el.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
         } else {
@@ -192,7 +196,9 @@ export default function BlobCursor() {
       if (state.mode === "pill") {
         activeElRef.current = target.closest("[data-cursor='pill']") as HTMLElement | null;
       } else if (state.mode === "underline") {
-        activeElRef.current = (target.closest("[data-cursor='underline']") || target.closest("h3, h2") || target.closest("a[href], button")) as HTMLElement | null;
+        const underlineEl = target.closest("[data-cursor='underline']") as HTMLElement | null;
+        const measure = underlineEl?.querySelector("[data-cursor-measure]") as HTMLElement | null;
+        activeElRef.current = measure || underlineEl || (target.closest("h3, h2") || target.closest("a[href], button")) as HTMLElement | null;
       } else if (state.mode !== "dot") {
         activeElRef.current = target.closest("a[href], button, [role='button'], input, textarea, select") as HTMLElement | null;
       } else {

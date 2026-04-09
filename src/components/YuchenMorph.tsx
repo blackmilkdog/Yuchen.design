@@ -64,19 +64,19 @@ export default function YuchenMorph() {
 
   const trigger = useCallback((toChinese: boolean) => {
     setChinese(toChinese);
+    // Always notify header so it stays in sync, even when queued
+    window.dispatchEvent(new CustomEvent("yuchen-hover", { detail: { chinese: toChinese } }));
     if (animating.current) {
       queued.current = toChinese;
       return;
     }
     runBlur(toChinese);
-    // Notify header to mirror the animation
-    window.dispatchEvent(new CustomEvent("yuchen-hover", { detail: { chinese: toChinese } }));
   }, [runBlur]);
 
   return (
     <span
       ref={containerRef}
-      data-cursor="none"
+      data-cursor="underline"
       className="relative inline-flex cursor-pointer overflow-hidden align-baseline"
       onMouseEnter={() => trigger(true)}
       onMouseLeave={() => trigger(false)}
@@ -85,6 +85,8 @@ export default function YuchenMorph() {
       <span ref={sizerRef} className="invisible whitespace-nowrap">
         {displayText}
       </span>
+      {/* always-chinese sizer for cursor underline targeting */}
+      <span data-cursor-measure className="invisible absolute whitespace-nowrap">雨晨</span>
 
       <span
         ref={textRef}
