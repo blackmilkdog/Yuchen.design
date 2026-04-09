@@ -153,7 +153,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 3.0, ease }}
           className="mt-6 font-satoshi text-[16px] leading-[1.4] tracking-[-0.3px] text-white/40 sm:text-[18px]"
         >
-          Project Manager @ CodePay | NYC
+          @ CodePay | NYC
         </motion.p>
 
         {/* CTA buttons */}
