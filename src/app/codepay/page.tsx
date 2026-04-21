@@ -125,7 +125,7 @@ function SectionHeader({
         <h3 className="mt-4 font-serif text-[36px] leading-[1.2] tracking-[-0.5px] text-gray-900 lg:text-[42px]">
           {title}
         </h3>
-        <p className="mt-4 max-w-[720px] font-sans text-[17px] italic leading-[1.7] text-gray-400">
+        <p className="mt-4 max-w-[900px] font-sans text-[17px] italic leading-[1.7] text-gray-400">
           &ldquo;{quote}&rdquo;
         </p>
       </div>
@@ -366,11 +366,11 @@ export default function CodePayPage() {
             {[
               {
                 label: "Patch Track",
-                body: "Risk-ranked fixes from real feedback — guardrails and validation that solve what's urgent today.",
+                body: "Risk-ranked fixes from real feedback. Guardrails and validation that solve what's urgent today.",
               },
               {
                 label: "Platform Track",
-                body: "Rebuild the system in parallel with staged rollout — feature flags, gradual migration, one source of truth.",
+                body: "Rebuild the system in parallel with staged rollout. Feature flags, gradual migration, one source of truth.",
               },
               {
                 label: "Prototype & AI Workflow",
@@ -622,7 +622,7 @@ export default function CodePayPage() {
           {/* Foundation */}
           <SubBlock title="Foundation">
             <Body>
-              Built a cross-product foundation — an open-source library
+              Built a cross-product foundation on top of an open-source library,
               reskinned with brand tokens: colors, type scale, spacing. One
               source of truth for everything across all products.
             </Body>
@@ -1095,13 +1095,13 @@ export default function CodePayPage() {
             <MetricCard
               label="Engagement"
               value="~85%"
-              detail="Engaged session rate — merchants using it, not just downloading"
+              detail="Engaged session rate. Merchants using it, not just downloading."
               delay={0.08}
             />
             <MetricCard
               label="Support"
               value="~20%"
-              detail="Drop in partner support inquiries — the app answered the questions"
+              detail="Drop in partner support inquiries. The app answered the questions."
               delay={0.16}
             />
             <MetricCard
@@ -1138,8 +1138,8 @@ export default function CodePayPage() {
           <div className="mt-8 mb-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { num: "01", label: "Data Integrity", problem: "Same fields, different meanings. Merchants couldn't reconcile the app with their bank.", action: "Audited and aligned data definitions across product, eng, and ops." },
-              { num: "02", label: "Invisible Usage", problem: "No tracking existed. Every prioritization call was a guess.", action: "Designed event taxonomy from scratch — first product with structured analytics." },
-              { num: "03", label: "Scattered Demand", problem: "Everything felt equally urgent — nothing got prioritized well.", action: "Built a prioritization framework balancing merchant needs against dev capacity." },
+              { num: "02", label: "Invisible Usage", problem: "No tracking existed. Every prioritization call was a guess.", action: "Designed event taxonomy from scratch. First product in the company with structured analytics." },
+              { num: "03", label: "Scattered Demand", problem: "Everything felt equally urgent, so nothing got prioritized well.", action: "Built a prioritization framework balancing merchant needs against dev capacity." },
               { num: "04", label: "Indirect Feedback", problem: "B2B2B meant the merchant was two hops away. Feedback arrived late.", action: "Routed discovery through partner leads who aggregate and filter signal." },
             ].map((gap, i) => (
               <FadeIn key={gap.num} delay={i * 0.06}>
@@ -1168,8 +1168,9 @@ export default function CodePayPage() {
             </h4>
             <Body>
               We shipped v1.0.0 as a &ldquo;business growth dashboard.&rdquo;
-              Then I led field interviews with merchants. The feedback was
-              unambiguous.
+              Then, through interviews and workshops with our partners, we
+              learned that what we&rsquo;d built wasn&rsquo;t what merchants
+              cared about most.
             </Body>
           </FadeIn>
 
@@ -1283,7 +1284,7 @@ export default function CodePayPage() {
           <FadeIn>
             <Body>
               I designated Sprint 1 as the foundation sprint that blocks
-              everything else — no payment actions, no new features. Just data
+              everything else. No payment actions, no new features. Just data
               truth. I defined how time windows, comparison logic, timezone
               rules, and refresh states should work across the dashboard.
             </Body>
@@ -1295,7 +1296,7 @@ export default function CodePayPage() {
               {[
                 {
                   label: "The 23:59 Bug",
-                  problem: "Same-day query returned empty — end time defaulted to 00:00, making end < start.",
+                  problem: "Same-day query returned empty. End time defaulted to 00:00, making end < start.",
                   fix: "Default same-day to 00:00–23:59. Redesigned date picker with explicit start/end.",
                 },
                 {
@@ -1429,7 +1430,7 @@ export default function CodePayPage() {
               <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-5">
                 <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-300 mb-3">The original plan</p>
                 <p className="font-serif text-[22px] leading-[1.2] text-gray-400">200 merchant downloads</p>
-                <p className="mt-2 font-sans text-[13px] leading-[1.6] text-gray-400">by end of December — push for adoption</p>
+                <p className="mt-2 font-sans text-[13px] leading-[1.6] text-gray-400">by end of December</p>
               </div>
               <div className="rounded-xl border-2 border-accent/30 bg-accent/[0.05] p-5">
                 <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-accent/60 mb-3">My recommendation</p>
@@ -1494,7 +1495,7 @@ export default function CodePayPage() {
 
           <FadeIn>
             <Body>
-              Built reusable GTM assets — different pitches for ISO/ISV
+              Built reusable GTM assets: different pitches for ISO/ISV
               partners vs. merchants, sales pitch frameworks for the BD team,
               merchant outreach materials (email templates, flyers, tutorial
               guides). Standardized messaging and{" "}
@@ -1512,7 +1513,7 @@ export default function CodePayPage() {
             </h3>
             <Body>
               Sprint 1 was the &ldquo;foundation sprint that blocks everything
-              else&rdquo; — no features, just data trust. The CEO agreed to the
+              else.&rdquo; No features, just data trust. The CEO agreed to the
               PRD I wrote from scratch, synthesizing field interviews, POC
               feedback, and live blocking issues.
             </Body>
@@ -1587,7 +1588,7 @@ export default function CodePayPage() {
             </p>
             <p className="max-w-[640px] font-sans text-[16px] leading-[1.8] text-gray-500 lg:text-[17px]">
               The harder design question isn&rsquo;t &ldquo;what can AI
-              do?&rdquo; — it&rsquo;s{" "}
+              do?&rdquo; It&rsquo;s{" "}
               <span className="text-gray-800 font-medium">
                 what authority does AI have, what state is it aware of, and how
                 does trust survive when actions are irreversible?
