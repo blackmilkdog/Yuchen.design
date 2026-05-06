@@ -19,14 +19,20 @@ interface Project {
 }
 
 const tagIcons: Record<string, React.ReactNode> = {
-  // CodePay
+  // CodePay Go (0→1 + AI Vision)
+  "0→1 Product Definition": <><circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" /></>,
+  "AI-first Prototyping": <><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11h-4V9.5A4 4 0 0 1 12 2z" /><path d="M10 11h4v2h-4z" /><path d="M9 15h6" /><path d="M10 18h4" /></>,
+  "PM Decision-making": <><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></>,
+  "Data Truth as Product Surface": <><path d="M3 3v18h18" /><path d="M7 14l4-4 4 4 5-5" /></>,
+  "Trust-aware AI Design": <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></>,
+  // CodePay (existing product redesign)
   "Design Systems at Scale": <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />,
   "High-Trust UX (Risk & Clarity)": <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
   "Workflow Simplification": <><path d="M4 12h16" /><path d="M4 6h16" /><path d="M4 18h10" /><path d="M17 15l3 3-3 3" /></>,
   "Feedback-to-Release Loop": <><path d="M21 12a9 9 0 1 1-6.2-8.6" /><path d="M21 3v6h-6" /></>,
-  "AI-first Prototyping": <><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11h-4V9.5A4 4 0 0 1 12 2z" /><path d="M10 11h4v2h-4z" /><path d="M9 15h6" /><path d="M10 18h4" /></>,
+  "AI-assisted Prototyping": <><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11h-4V9.5A4 4 0 0 1 12 2z" /><path d="M10 11h4v2h-4z" /><path d="M9 15h6" /><path d="M10 18h4" /></>,
   // BonCamel
-  "0\u21921 Feature Design": <><path d="M12 5l7 14H5z" /></>,
+  "0→1 Feature Design": <><path d="M12 5l7 14H5z" /></>,
   "User Research + Usability Testing": <><circle cx="12" cy="8" r="4" /><path d="M6 20v-2a6 6 0 0 1 12 0v2" /></>,
   "Conversion Optimization": <><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></>,
   "Hi-Fi Prototyping": <><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18" /><path d="M9 21V9" /></>,
@@ -36,29 +42,45 @@ const tagIcons: Record<string, React.ReactNode> = {
   "Dispatch Ops Workflows": <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M9 15l2 2 4-4" /></>,
   "Simulation / Validation": <><circle cx="12" cy="12" r="10" /><path d="M10 8l6 4-6 4V8z" /></>,
   "Edge-Case Design": <><path d="M2 12h4" /><path d="M18 12h4" /><path d="M12 2v4" /><path d="M12 18v4" /><circle cx="12" cy="12" r="4" /></>,
-  "Prototype \u2192 Ship": <><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></>,
+  "Prototype → Ship": <><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></>,
   // Philly Truce
   "Information Architecture": <><path d="M3 3h7v7H3zM14 3h7v4h-7zM14 10h7v4h-7zM3 13h7v8H3zM14 17h7v4h-7z" /></>,
   "Hierarchy & Progressive Disclosure": <><path d="M6 9l6 6 6-6" /></>,
-  "0\u21921 Product Definition": <><circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" /></>,
   "Scope & Prioritization": <><path d="M4 6h16M4 10h12M4 14h8M4 18h4" /></>,
   "Cross-functional Collaboration": <><circle cx="9" cy="7" r="3" /><circle cx="15" cy="7" r="3" /><path d="M3 19v-2a4 4 0 0 1 4-4h2" /><path d="M15 13h2a4 4 0 0 1 4 4v2" /></>,
 };
 
 const projects: Project[] = [
   {
-    company: "CodePay / Fintech Startup",
-    title: "B2B Payment System",
+    company: "CodePay Go / Fintech Startup",
+    title: "0-to-1 Mobile Product + AI Vision",
     date: "July 2025 - Present",
     image: "/images/codepay.png",
     description:
-      "Founding designer across CodePay\u2019s B2B payments suite (in-person solution + operations) \u2014 building a cross-product design system, refactoring high-trust workflows, and prototyping AI-first experiences.",
+      "Sole PM and founding designer for CodePay Go — took a mobile merchant intelligence app from concept to launch (3× user growth, 85% engaged session rate). Then designed AI as a trust-preserving layer for the payment stack, aligning CEO + investors with interactive prototypes and a Draft→Review→Confirm→Audit guardrail model.",
+    tags: [
+      "0→1 Product Definition",
+      "AI-first Prototyping",
+      "PM Decision-making",
+      "Data Truth as Product Surface",
+      "Trust-aware AI Design",
+    ],
+    tagGradient: "linear-gradient(135deg, #fef3c7, #ffffff)",
+    link: "/codepay-go",
+  },
+  {
+    company: "CodePay / Fintech Startup",
+    title: "B2B Payment Platform Redesign",
+    date: "July 2025 - Present",
+    image: "/images/codepay.png",
+    description:
+      "Founding designer across CodePay’s B2B payments suite (in-person solution + ops platform). Built a cross-product design system, ran risk-ranked patches from real partner feedback, and led the v3.0 Register UI/UX rebuild for 7,000+ active terminals.",
     tags: [
       "Design Systems at Scale",
       "High-Trust UX (Risk & Clarity)",
       "Workflow Simplification",
       "Feedback-to-Release Loop",
-      "AI-first Prototyping",
+      "AI-assisted Prototyping",
     ],
     tagGradient: "linear-gradient(135deg, #dbeafe, #ffffff)",
     link: "/codepay",
@@ -69,9 +91,9 @@ const projects: Project[] = [
     date: "March 2024 - May 2024",
     image: "/images/boncamel.png",
     description:
-      "Defined the end-to-end AI shopping flow (intent capture \u2192 recommendations \u2192 shortlist \u2192 checkout) and iterated through usability testing and A/B validation to improve purchase intent.",
+      "Defined the end-to-end AI shopping flow (intent capture → recommendations → shortlist → checkout) and iterated through usability testing and A/B validation to improve purchase intent.",
     tags: [
-      "0\u21921 Feature Design",
+      "0→1 Feature Design",
       "User Research + Usability Testing",
       "Conversion Optimization",
       "Hi-Fi Prototyping",
@@ -86,13 +108,13 @@ const projects: Project[] = [
     date: "May 2024 - July 2024",
     image: "/images/phillytruce.png",
     description:
-      "Designed fleet ops + HMI interactions for autonomous trucking \u2014 mapping dispatch-to-execution workflows and defining risk-aware UI patterns for safety-critical scenarios. Built prototypes and simulations to validate faster, and shipped iterative improvements with engineering in a tight build\u2013test loop.",
+      "Designed fleet ops + HMI interactions for autonomous trucking — mapping dispatch-to-execution workflows and defining risk-aware UI patterns for safety-critical scenarios. Built prototypes and simulations to validate faster, and shipped iterative improvements with engineering in a tight build–test loop.",
     tags: [
       "Safety-Critical UX",
       "Dispatch Ops Workflows",
       "Simulation / Validation",
       "Edge-Case Design",
-      "Prototype \u2192 Ship",
+      "Prototype → Ship",
     ],
     tagGradient: "linear-gradient(135deg, #dcfce7, #ffffff)",
     link: "/didi",
@@ -107,7 +129,7 @@ const projects: Project[] = [
     tags: [
       "Information Architecture",
       "Hierarchy & Progressive Disclosure",
-      "0\u21921 Product Definition",
+      "0→1 Product Definition",
       "Scope & Prioritization",
       "Cross-functional Collaboration",
     ],

@@ -56,7 +56,7 @@ export default function DiDiPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease }}
-            className="font-mono text-sm uppercase tracking-[0.15em] text-[#fa5c40]"
+            className="font-mono text-sm uppercase tracking-[0.15em] text-accent"
           >
             DiDi &middot; Mobility Platform
           </motion.p>

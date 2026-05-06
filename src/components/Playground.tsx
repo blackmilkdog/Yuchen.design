@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useCallback } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -16,23 +16,23 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: "Magic Diary \u00b7 AI Journaling Companion (Gamification)",
+    title: "Magic Diary · AI Journaling Companion",
     description:
-      "Designed a narrative, object-based navigation system and Lottie-powered interaction loop that turns journaling into a playful \u201cpotion-making\u201d experience.",
+      "Narrative, object-based navigation with a Lottie-powered interaction loop that turns journaling into a playful “potion-making” experience.",
     image: "/images/magic-diary.svg",
     link: "https://drive.google.com/file/d/1QrfPZEc8KEO4N3ytfHBGYmvJohhwtbCb/view?usp=sharing",
   },
   {
-    title: "AR Try-On Lens for Sustainable Fashion (200k Plays)",
+    title: "AR Try-On Lens for Sustainable Fashion",
     description:
-      "Built a 3D-to-AR virtual try-on Lens for sustainable fashion on Snapchat, reaching 200k+ total plays/views.",
+      "A 3D-to-AR virtual try-on Lens for sustainable fashion on Snapchat — 200k+ plays / views.",
     image: "/images/ar-tryon.svg",
     link: "https://creator.snapchat.com/creator/67D-fbK5xxmfPrKV5idmPA",
   },
   {
-    title: "Interactive Data Visualization (30k+ entries)",
+    title: "Interactive Data Visualization",
     description:
-      "Built a web-based interactive data explorer for 30k+ material records to surface patterns and support faster comparison, filtering, and insight discovery.",
+      "A web-based explorer for 30k+ material records — surfaces patterns, supports fast comparison and filtering.",
     image: "/images/data-viz.svg",
     link: "https://public.flourish.studio/visualisation/6037305/",
   },
@@ -45,67 +45,46 @@ const projects: Project[] = [
   },
 ];
 
-const PlaygroundCard = React.memo(function PlaygroundCard({ project, index }: { project: Project; index: number }) {
-  const cardRef = useRef<HTMLAnchorElement>(null);
-  const shimmerRef = useRef<HTMLDivElement>(null);
+// Deterministic tilt angles for the polaroid wall — gives each card a natural lean
+const tiltAngles = [-2.5, 3, -3, 2, -2, 3.5, -3.5, 2.5];
 
-  const handleCardMouse = useCallback((e: React.MouseEvent) => {
-    if (!shimmerRef.current || !cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    shimmerRef.current.style.background = `radial-gradient(400px circle at ${x}px ${y}px, rgba(255,255,255,0.15), transparent 40%)`;
-  }, []);
-
-  const handleCardLeave = useCallback(() => {
-    if (!shimmerRef.current) return;
-    shimmerRef.current.style.background = "transparent";
-  }, []);
-
-  const baseDelay = index * 0.12;
+const PolaroidCard = React.memo(function PolaroidCard({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
+  const tilt = tiltAngles[index % tiltAngles.length];
 
   return (
     <motion.a
-      ref={cardRef}
       href={project.link}
       target="_blank"
       rel="noopener noreferrer"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: baseDelay, ease }}
       data-cursor="arrow"
-      className="group relative block aspect-[4/3] overflow-hidden rounded-[36px] border border-white/15 no-underline"
-      onMouseMove={handleCardMouse}
-      onMouseLeave={handleCardLeave}
+      initial={{ opacity: 0, y: 24, rotate: tilt }}
+      whileInView={{ opacity: 1, y: 0, rotate: tilt }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, delay: index * 0.08, ease }}
+      whileHover={{
+        rotate: 0,
+        y: -8,
+        scale: 1.025,
+        transition: { duration: 0.4, ease },
+      }}
+      className="group relative block bg-white p-3 pb-2 no-underline shadow-[0_4px_16px_-6px_rgba(60,40,20,0.18)] transition-shadow duration-500 ease-out hover:shadow-[0_18px_40px_-10px_rgba(60,40,20,0.22)]"
+      style={{ transformOrigin: "center" }}
     >
-      {/* Gradient border – appears on hover */}
-      <div
-        className="pointer-events-none absolute -inset-[1px] z-40 rounded-[36px] opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-        style={{
-          background: "linear-gradient(135deg, #f5903c, #ffb366, #f5903c, #e8662a)",
-          padding: "3px",
-          WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-          WebkitMaskComposite: "xor",
-          maskComposite: "exclude",
-        }}
-      />
-
-      {/* Glassmorphic shimmer glow – follows cursor */}
-      <div
-        ref={shimmerRef}
-        className="pointer-events-none absolute inset-0 z-30 rounded-[36px] transition-[background] duration-300 ease-out"
-      />
-
-      {/* Background image / gradient */}
-      <div className="absolute inset-0 transition-all duration-700 ease-out group-hover:scale-110 group-hover:blur-md">
+      {/* Image area — square */}
+      <div className="relative aspect-square overflow-hidden bg-gray-50">
         {project.image ? (
           <Image
             src={project.image}
             alt={project.title}
             fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <div
@@ -115,136 +94,68 @@ const PlaygroundCard = React.memo(function PlaygroundCard({ project, index }: { 
         )}
       </div>
 
-      {/* Grain texture – visible on hover */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 mix-blend-overlay transition-opacity duration-500 ease-out group-hover:opacity-30"
-        style={{
-          backgroundImage: "url('/images/grain-texture.png')",
-          backgroundSize: "256px 256px",
-          backgroundRepeat: "repeat",
-        }}
-      />
-
-      {/* Dark overlay for default state */}
-      <div className="absolute inset-0 bg-black/5 transition-all duration-500 group-hover:bg-transparent" />
-
-      {/* Content overlay – pinned to bottom */}
-      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col justify-end p-6 sm:p-8">
-        {/* Title – clip-path reveal: single smooth upward stroke */}
-        <div className="overflow-hidden">
-          <motion.h3
-            initial={{ y: "100%", opacity: 0 }}
-            whileInView={{ y: "0%", opacity: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.8, delay: baseDelay + 0.15, ease: "easeOut" }}
-            className="font-serif text-[28px] font-normal leading-[1.3] text-white transition-transform duration-500 ease-out group-hover:-translate-y-2 sm:text-[32px]"
-          >
-            {project.title}
-          </motion.h3>
-        </div>
-
-        {/* Description – hidden by default, fades + slides up on card hover */}
-        <p className="mt-0 max-h-0 translate-y-4 overflow-hidden font-sans text-[19px] leading-[1.6] tracking-[-0.15px] text-white opacity-0 transition-all duration-700 ease-out group-hover:mt-3 group-hover:max-h-[200px] group-hover:translate-y-0 group-hover:opacity-100">
+      {/* Caption — natural flow, polaroid bottom area */}
+      <div className="px-0.5 pt-3 pb-1">
+        <h3 className="font-serif text-[14px] leading-[1.25] text-gray-900 transition-colors duration-300 group-hover:text-[#c25430]">
+          {project.title}
+        </h3>
+        <p className="mt-1.5 line-clamp-2 font-sans text-[11px] leading-[1.5] text-gray-500">
           {project.description}
         </p>
-
-        {/* Button – hidden by default, fades + slides up after description */}
-        <div className="mt-0 max-h-0 translate-y-4 overflow-hidden opacity-0 transition-all duration-500 ease-out [transition-delay:150ms] group-hover:mt-5 group-hover:max-h-[60px] group-hover:translate-y-0 group-hover:opacity-100">
-          <span data-cursor="pill" className="group/btn relative inline-flex items-center overflow-hidden rounded-full border border-white/20 bg-white/10 py-[3px] pl-5 pr-[3px] backdrop-blur-md transition-[border-color,background-color] duration-600 ease-out hover:border-[#ffb347] hover:bg-accent/80">
-            {/* White ball that expands to fill, then turns orange */}
-            <span className="absolute right-[3px] top-1/2 h-[32px] w-[32px] -translate-y-1/2 rounded-full bg-white/20 transition-all duration-500 ease-out group-hover/btn:right-1/2 group-hover/btn:h-[300%] group-hover/btn:w-[300%] group-hover/btn:translate-x-1/2 group-hover/btn:bg-accent" />
-            <span className="relative z-10 pr-2.5 font-sans text-[14px] font-medium text-white">
-              Take a look
-            </span>
-            <span className="relative z-10 flex h-[32px] w-[32px] items-center justify-center">
-              <svg className="h-[14px] w-[14px] text-white transition-all duration-500 ease-out group-hover/btn:rotate-[360deg]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </span>
-          </span>
-        </div>
       </div>
     </motion.a>
   );
 });
 
 export default function Playground() {
-  const grainRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!grainRef.current) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 30;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 30;
-    grainRef.current.style.transform = `translate(${x}px, ${y}px)`;
-  }, []);
-
   return (
-    <section id="playground" className="relative z-10 px-0 py-12 sm:px-8 md:py-16 lg:px-12">
+    <section
+      id="playground"
+      className="relative px-6 py-24 sm:px-8 md:py-32 lg:px-16"
+      style={{ background: "#F9F7F3" }}
+    >
+      {/* Subtle paper grain */}
       <div
-        className="relative mx-auto overflow-hidden rounded-none px-6 py-20 sm:rounded-[36px] sm:px-12 md:py-32 lg:px-16 animate-gradient-shift"
-        onMouseMove={handleMouseMove}
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
-          background: "linear-gradient(135deg, #d44a1a, #e8662a, #f5903c, #ffb366, #f5903c, #e8662a, #c23a10, #d44a1a)",
-          backgroundSize: "400% 400%",
+          backgroundImage: "url('/images/grain-texture.png')",
+          backgroundSize: "256px 256px",
         }}
-      >
-        {/* Rotating conic flare – blurred layer */}
-        <div className="pointer-events-none absolute animate-flare-spin" style={{ width: "140%", height: "140%", left: "-20%", top: "-20%" }}>
-          <div
-            className="h-full w-full animate-flare-pulse opacity-60 blur-[80px]"
-            style={{
-              background: "conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.35) 40deg, transparent 120deg, rgba(255,200,100,0.3) 200deg, transparent 280deg, rgba(255,255,255,0.2) 340deg, transparent 360deg)",
-              borderRadius: "50%",
-            }}
-          />
-        </div>
+      />
 
-        {/* Rotating conic flare – sharp blend layer */}
-        <div className="pointer-events-none absolute animate-flare-spin-reverse mix-blend-soft-light" style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}>
-          <div
-            className="h-full w-full animate-flare-pulse-alt opacity-50 blur-[50px]"
-            style={{
-              background: "conic-gradient(from 180deg, transparent 0deg, rgba(255,220,150,0.4) 60deg, transparent 150deg, rgba(255,255,255,0.3) 240deg, transparent 330deg, transparent 360deg)",
-              borderRadius: "50%",
-            }}
-          />
-        </div>
+      {/* Soft warm orb — top right, very faint */}
+      <div
+        className="pointer-events-none absolute -right-32 top-12 h-[400px] w-[400px] rounded-full opacity-25 blur-[120px]"
+        style={{ background: "radial-gradient(circle, #F5B98A, transparent 70%)" }}
+      />
 
-        {/* Dot grid pattern */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-          }}
-        />
-
-        {/* Film grain texture – follows cursor */}
-        <div
-          ref={grainRef}
-          className="pointer-events-none absolute -inset-8 opacity-[0.35] mix-blend-overlay transition-transform duration-300 ease-out animate-grain"
-        />
-
-        <div className="relative z-10 mx-auto max-w-[1180px]">
+      <div className="relative z-10 mx-auto max-w-[1200px]">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, ease }}
-          className="mb-12 text-center md:mb-16"
+          className="mb-16 max-w-[680px]"
         >
-          <h2 className="font-serif text-[64px] font-normal leading-[1.2] tracking-[-1px] text-white">
+          <p className="mb-3 font-mono text-[12px] uppercase tracking-[0.18em] text-[#c25430]">
             Playground
+          </p>
+          <h2 className="font-serif text-[36px] font-normal leading-[1.1] tracking-[-0.6px] text-gray-900 lg:text-[44px]">
+            Side projects, experiments,
+            <br />
+            and things I made for fun.
           </h2>
-          <p className="mx-auto mt-3 font-sans text-[20px] leading-[1.6] tracking-[-0.18px] text-white">
-            Vibe Coding Projects, XR, Games, Textiles, 3D Arts, Programming Arts etc.
+          <p className="mt-5 font-sans text-[15px] leading-[1.7] text-gray-500 lg:text-[16px]">
+            Vibe-coded prototypes, XR, games, textiles, 3D arts, programming arts.
+            More on the way — this corner grows.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+        {/* Polaroid wall — 2/3/4 cols, generous gap so tilted cards breathe */}
+        <div className="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-2 md:grid-cols-3 md:gap-x-8 md:gap-y-12 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-14">
           {projects.map((project, i) => (
-            <PlaygroundCard key={project.title} project={project} index={i} />
+            <PolaroidCard key={project.title} project={project} index={i} />
           ))}
-        </div>
         </div>
       </div>
     </section>

@@ -83,12 +83,12 @@ export default function Header() {
         }}
       />
 
-      {/* Header content */}
+      {/* Header content — constrained to the same 1200px frame as the rest of the page */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease, delay: 0.2 }}
-        className="relative flex items-center justify-between px-6 py-5 sm:px-10 lg:px-14"
+        className="relative mx-auto flex max-w-[1200px] items-center justify-between px-6 py-5 sm:px-8 lg:px-16"
       >
         <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="flex items-center gap-2 font-serif text-[22px] tracking-[-0.5px] text-white sm:text-[26px]">
           <span ref={nameRef}>{displayName}</span>

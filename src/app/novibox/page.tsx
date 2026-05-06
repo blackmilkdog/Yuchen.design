@@ -129,7 +129,7 @@ export default function NoviBoxCaseStudy() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease }}
-            className="font-mono text-sm uppercase tracking-[0.15em] text-[#fa5c40]"
+            className="font-mono text-sm uppercase tracking-[0.15em] text-accent"
           >
             BonCamel &middot; E-Commerce Startup
           </motion.p>
@@ -186,7 +186,7 @@ export default function NoviBoxCaseStudy() {
                 key={m.label}
                 className="rounded-2xl border border-gray-200 bg-gray-50 p-6 backdrop-blur-sm lg:p-8"
               >
-                <p className="font-serif text-[36px] leading-none tracking-[-1px] text-[#fa5c40] lg:text-[48px]">
+                <p className="font-serif text-[36px] leading-none tracking-[-1px] text-accent lg:text-[48px]">
                   {m.stat}
                 </p>
                 <p className="mt-3 font-sans text-sm leading-snug text-gray-500">
@@ -248,7 +248,7 @@ export default function NoviBoxCaseStudy() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, ease }}
           >
-            <p className="font-mono text-sm uppercase tracking-[0.15em] text-[#fa8e41]">
+            <p className="font-mono text-sm uppercase tracking-[0.15em] text-accent-secondary">
               Guiding Principles
             </p>
             <h2 className="mt-4 font-serif text-[32px] font-normal leading-[1.2] tracking-[-0.5px] text-gray-900 lg:text-[42px]">
@@ -266,8 +266,8 @@ export default function NoviBoxCaseStudy() {
                 transition={{ duration: 0.6, delay: i * 0.1, ease }}
                 className="rounded-2xl border border-gray-200 bg-gray-50/80 p-8 backdrop-blur-sm lg:p-10"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-[#fa5c40]/30 bg-[#fa5c40]/10">
-                  <span className="font-mono text-sm text-[#fa5c40]">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-accent/30 bg-accent/10">
+                  <span className="font-mono text-sm text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
@@ -297,7 +297,7 @@ export default function NoviBoxCaseStudy() {
             <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/10 blur-[100px]" />
             <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-accent-secondary/10 blur-[100px]" />
 
-            <p className="relative font-mono text-sm uppercase tracking-[0.15em] text-[#fa5c40]">
+            <p className="relative font-mono text-sm uppercase tracking-[0.15em] text-accent">
               Key Insight
             </p>
             <p className="relative mt-6 max-w-[720px] font-serif text-[24px] leading-[1.5] tracking-[-0.5px] text-gray-900 lg:text-[32px]">
@@ -322,7 +322,7 @@ export default function NoviBoxCaseStudy() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, ease }}
           >
-            <p className="font-mono text-sm uppercase tracking-[0.15em] text-[#fa8e41]">
+            <p className="font-mono text-sm uppercase tracking-[0.15em] text-accent-secondary">
               Reflections
             </p>
             <h2 className="mt-4 font-serif text-[32px] font-normal leading-[1.2] tracking-[-0.5px] text-gray-900 lg:text-[42px]">
@@ -338,7 +338,7 @@ export default function NoviBoxCaseStudy() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease }}
-                className="flex gap-6 border-l-2 border-[#fa5c40]/40 py-2 pl-8 lg:gap-12"
+                className="flex gap-6 border-l-2 border-accent/40 py-2 pl-8 lg:gap-12"
               >
                 <span className="hidden shrink-0 font-mono text-[48px] leading-none text-gray-100 lg:block">
                   {String(i + 1).padStart(2, "0")}

@@ -36,7 +36,7 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen flex-col items-start justify-center overflow-hidden px-6 pt-[180px] pb-[100px] sm:px-8 lg:px-16"
+      className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pt-[180px] pb-[100px] sm:px-8 lg:px-16"
     >
       <Starfield />
 
@@ -61,6 +61,20 @@ export default function Hero() {
         }}
       />
 
+      {/* SVG filter for rough/chalky halo edges */}
+      <svg className="pointer-events-none absolute" width="0" height="0">
+        <defs>
+          <filter id="rough-halo" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="5" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="60" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <filter id="rough-halo-soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="35" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
+
       {/* Sun — half-visible at top */}
       {/* Phase 1: Sun descends from above (0s – 1.4s) */}
       <motion.div
@@ -70,30 +84,54 @@ export default function Hero() {
         className="absolute left-1/2 top-0 z-[6] -translate-x-1/2 -translate-y-3/4"
         style={{ width: "50vw", height: "50vw" }}
       >
-        {/* Phase 2: Glow expands after sun arrives (1.0s – 2.2s) */}
+        {/* Phase 2: Glow expands after sun arrives — outermost rough halo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.3 }}
           animate={{ opacity: 0.7, scale: 1 }}
           transition={{ duration: 1.2, delay: 1.0, ease }}
-          className="absolute -inset-[25%] animate-sun-glow-pulse rounded-full blur-[100px]"
-          style={{ background: "radial-gradient(circle, #ffcc00 0%, #ff8c42 40%, transparent 65%)" }}
+          className="absolute -inset-[25%] animate-sun-glow-pulse rounded-full blur-[60px]"
+          style={{
+            background: "radial-gradient(circle, #ffcc00 0%, #ff8c42 40%, transparent 65%)",
+            filter: "url(#rough-halo) blur(60px)",
+          }}
         />
+        {/* Mid-layer halo with rougher displacement */}
         <motion.div
           initial={{ opacity: 0, scale: 0.3 }}
-          animate={{ opacity: 0.5, scale: 1 }}
+          animate={{ opacity: 0.55, scale: 1 }}
           transition={{ duration: 1.2, delay: 1.2, ease }}
-          className="absolute -inset-[15%] animate-sun-glow-pulse rounded-full blur-[70px]"
+          className="absolute -inset-[15%] animate-sun-glow-pulse rounded-full blur-[40px]"
           style={{
             background: "radial-gradient(circle, #ffe066 0%, #ffcc00 40%, transparent 65%)",
             animationDelay: "-3s",
+            filter: "url(#rough-halo-soft) blur(40px)",
           }}
         />
+        {/* Inner glow */}
         <motion.div
           initial={{ opacity: 0, scale: 0.3 }}
           animate={{ opacity: 0.6, scale: 1 }}
           transition={{ duration: 1.0, delay: 1.4, ease }}
-          className="absolute -inset-[5%] rounded-full blur-[40px]"
-          style={{ background: "radial-gradient(circle, #ffd633 0%, #ff8c42 30%, transparent 70%)" }}
+          className="absolute -inset-[5%] rounded-full blur-[25px]"
+          style={{
+            background: "radial-gradient(circle, #ffd633 0%, #ff8c42 30%, transparent 70%)",
+            filter: "url(#rough-halo-soft) blur(25px)",
+          }}
+        />
+
+        {/* Grain texture overlay on the halo — handmade/chalky feel */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.45 }}
+          transition={{ duration: 1.5, delay: 1.4, ease }}
+          className="pointer-events-none absolute -inset-[20%] rounded-full mix-blend-overlay"
+          style={{
+            backgroundImage: "url(/images/grain-texture.png)",
+            backgroundSize: "320px 320px",
+            backgroundRepeat: "repeat",
+            WebkitMaskImage: "radial-gradient(circle, black 20%, rgba(0,0,0,0.6) 50%, transparent 75%)",
+            maskImage: "radial-gradient(circle, black 20%, rgba(0,0,0,0.6) 50%, transparent 75%)",
+          }}
         />
 
         {/* Sun circle */}
@@ -110,8 +148,9 @@ export default function Hero() {
       {/* 3D Text Snake orbiting the sun */}
       <TextSnake3D />
 
-      {/* Main content — centered */}
-      <div className="relative z-[7] flex w-full max-w-[650px] flex-col items-start text-left">
+      {/* Main content — constrained to the same 1200px frame as the rest of the page */}
+      <div className="relative z-[7] mx-auto w-full max-w-[1200px]">
+       <div className="flex max-w-[650px] flex-col items-start text-left">
         {/* Phase 3: Text animations after sun + glow (2.0s+) */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -178,6 +217,7 @@ export default function Hero() {
             </svg>
           </button>
         </motion.div>
+       </div>
       </div>
 
       {/* Bottom fade to black */}
