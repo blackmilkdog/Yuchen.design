@@ -58,7 +58,7 @@ export default function Footer() {
           href="mailto:yuchen666333@gmail.com"
           onMouseEnter={() => { if (!boneDragging) window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: 0.3 })); }}
           onMouseLeave={() => { if (!boneDragging) window.dispatchEvent(new CustomEvent("dog-eyes-scale", { detail: 0 })); }}
-          className="group mt-6 inline-flex items-center gap-4 font-serif text-[48px] leading-[1.2] tracking-[-1px] text-white md:text-[72px]"
+          className="group mt-6 inline-flex items-center gap-4 font-serif text-[48px] leading-[1.2] tracking-[-1px] text-[#2A2620] md:text-[72px]"
         >
           <span>Get in Touch</span>
           <svg
@@ -83,7 +83,7 @@ export default function Footer() {
         <div className="flex items-center gap-4">
           <a
             href="mailto:yuchen666333@gmail.com"
-            className="text-white/30 transition-colors duration-200 hover:text-white"
+            className="text-[#A89E8C] transition-colors duration-200 hover:text-[#2A2620]"
             aria-label="Email"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -95,7 +95,7 @@ export default function Footer() {
             href="https://instagram.com/yuchen_0.0_/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/30 transition-colors duration-200 hover:text-white"
+            className="text-[#A89E8C] transition-colors duration-200 hover:text-[#2A2620]"
             aria-label="Instagram"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -108,7 +108,7 @@ export default function Footer() {
             href="https://www.linkedin.com/in/yuchenzhang333/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/30 transition-colors duration-200 hover:text-white"
+            className="text-[#A89E8C] transition-colors duration-200 hover:text-[#2A2620]"
             aria-label="LinkedIn"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -118,7 +118,7 @@ export default function Footer() {
             </svg>
           </a>
         </div>
-        <p className="font-satoshi text-[13px] text-white">
+        <p className="font-satoshi text-[13px] text-[#2A2620]">
           Made with &lt;3 by Yuchen :)
         </p>
       </div>

@@ -65,7 +65,7 @@ const projects: Project[] = [
       "Data Truth as Product Surface",
       "Trust-aware AI Design",
     ],
-    tagGradient: "linear-gradient(135deg, #fef3c7, #ffffff)",
+    tagGradient: "linear-gradient(135deg, #F4E4C1, #FAF6EB)",
     link: "/codepay-go",
   },
   {
@@ -82,7 +82,7 @@ const projects: Project[] = [
       "Feedback-to-Release Loop",
       "AI-assisted Prototyping",
     ],
-    tagGradient: "linear-gradient(135deg, #dbeafe, #ffffff)",
+    tagGradient: "linear-gradient(135deg, #D8E2EE, #FAF6EB)",
     link: "/codepay",
   },
   {
@@ -99,7 +99,7 @@ const projects: Project[] = [
       "Hi-Fi Prototyping",
       "Interaction Design",
     ],
-    tagGradient: "linear-gradient(135deg, #ede9fe, #ffffff)",
+    tagGradient: "linear-gradient(135deg, #F0DDD8, #FAF6EB)",
     link: "/novibox",
   },
   {
@@ -116,7 +116,7 @@ const projects: Project[] = [
       "Edge-Case Design",
       "Prototype → Ship",
     ],
-    tagGradient: "linear-gradient(135deg, #dcfce7, #ffffff)",
+    tagGradient: "linear-gradient(135deg, #DDE5DC, #FAF6EB)",
     link: "/didi",
   },
   {
@@ -133,7 +133,7 @@ const projects: Project[] = [
       "Scope & Prioritization",
       "Cross-functional Collaboration",
     ],
-    tagGradient: "linear-gradient(135deg, #dbeafe, #ffffff)",
+    tagGradient: "linear-gradient(135deg, #E5D8C8, #FAF6EB)",
     link: "#",
   },
 ];
@@ -148,25 +148,33 @@ function Perspective3DImage({ src, alt, imageFirst }: { src: string; alt: string
   const rotate = useTransform(scrollYProgress, [0, 0.5, 1], imageFirst ? [3, -1.5, -3] : [-3, 1.5, 3]);
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ rotateY, rotate, perspective: 800 }}
-      className="overflow-hidden rounded-[36px]"
-    >
-      <div className="relative aspect-[4/3] w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 1024px) 100vw, 660px"
-        />
-      </div>
-    </motion.div>
+    <div ref={ref} className="relative">
+      {/* Crop marks — incomplete frame, 4 corner L-shapes (don't rotate with image) */}
+      <span className="pointer-events-none absolute -left-2 -top-2 z-[5] h-5 w-5 border-l border-t border-[#A89E8C]/55" />
+      <span className="pointer-events-none absolute -right-2 -top-2 z-[5] h-5 w-5 border-r border-t border-[#A89E8C]/55" />
+      <span className="pointer-events-none absolute -bottom-2 -left-2 z-[5] h-5 w-5 border-b border-l border-[#A89E8C]/55" />
+      <span className="pointer-events-none absolute -bottom-2 -right-2 z-[5] h-5 w-5 border-b border-r border-[#A89E8C]/55" />
+
+      {/* Image — sharp corners, journal-page feel */}
+      <motion.div
+        style={{ rotateY, rotate, perspective: 800 }}
+        className="overflow-hidden"
+      >
+        <div className="relative aspect-[3/2] w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 660px"
+          />
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
-function ParallaxTags({ tags, imageFirst, gradient }: { tags: string[]; imageFirst: boolean; gradient: string }) {
+function ParallaxTags({ tags, imageFirst }: { tags: string[]; imageFirst: boolean; gradient?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -179,13 +187,23 @@ function ParallaxTags({ tags, imageFirst, gradient }: { tags: string[]; imageFir
   return (
     <motion.div
       ref={ref}
-      style={{ y, rotateY, rotate, perspective: 800, background: gradient }}
+      style={{
+        y,
+        rotateY,
+        rotate,
+        perspective: 800,
+        WebkitMask: `radial-gradient(circle 5px at 50% 0, transparent 99%, #000 100%) 0 0/14px 100% repeat-x, radial-gradient(circle 5px at 50% 100%, transparent 99%, #000 100%) 0 0/14px 100% repeat-x, radial-gradient(circle 5px at 0 50%, transparent 99%, #000 100%) 0 0/100% 14px repeat-y, radial-gradient(circle 5px at 100% 50%, transparent 99%, #000 100%) 0 0/100% 14px repeat-y`,
+        WebkitMaskComposite: "source-in",
+        mask: `radial-gradient(circle 5px at 50% 0, transparent 99%, #000 100%) 0 0/14px 100% repeat-x, radial-gradient(circle 5px at 50% 100%, transparent 99%, #000 100%) 0 0/14px 100% repeat-x, radial-gradient(circle 5px at 0 50%, transparent 99%, #000 100%) 0 0/100% 14px repeat-y, radial-gradient(circle 5px at 100% 50%, transparent 99%, #000 100%) 0 0/100% 14px repeat-y`,
+        maskComposite: "intersect",
+        filter: "drop-shadow(0 14px 24px rgba(60,40,20,0.28))",
+      }}
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: 0.3, ease }}
-      className={`absolute bottom-0 z-20 flex translate-y-[12.5%] flex-col gap-2.5 rounded-2xl px-5 py-4 shadow-lg sm:px-6 sm:py-5 ${
-        imageFirst ? "right-0 translate-x-[12.5%]" : "left-0 -translate-x-[12.5%]"
+      className={`absolute bottom-0 z-20 flex translate-y-[28%] flex-col gap-2.5 bg-white px-6 py-5 sm:px-7 sm:py-6 ${
+        imageFirst ? "right-0 translate-x-[20%]" : "left-0 -translate-x-[20%]"
       }`}
     >
       {tags.map((tag, idx) => (
@@ -208,72 +226,149 @@ function ParallaxTags({ tags, imageFirst, gradient }: { tags: string[]; imageFir
 }
 
 export default function Works() {
+  // Per-project washi tape + stamp colors aligned to each image's dominant color
+  // (blue codepay → blue tape, purple boncamel → purple tape, green kargobot → sage tape, etc.)
+  const projectAccents = [
+    // CodePay Go — blue dashboard image
+    { tape1: "rgba(180,200,222,0.85)", tape2: "rgba(160,182,208,0.85)", stamp: "#5B7BA8" },
+    // CodePay — same blue image
+    { tape1: "rgba(180,200,222,0.85)", tape2: "rgba(160,182,208,0.85)", stamp: "#5B7BA8" },
+    // BonCamel — purple/violet NOVI BOX image
+    { tape1: "rgba(196,178,222,0.85)", tape2: "rgba(178,160,210,0.85)", stamp: "#7B5BA8" },
+    // DiDi — green kargobot truck image
+    { tape1: "rgba(180,210,180,0.85)", tape2: "rgba(160,196,160,0.85)", stamp: "#5B8B5F" },
+    // Philly Truce — blue mobile app
+    { tape1: "rgba(186,206,228,0.85)", tape2: "rgba(168,190,216,0.85)", stamp: "#6580AC" },
+  ];
+
   return (
-    <section id="works" className="px-8 lg:px-16">
-      <div className="mx-auto max-w-[1200px] py-16">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+    <section id="works" className="px-6 sm:px-8 lg:px-16">
+      <div className="mx-auto max-w-[1200px] pt-20 pb-44">
+        {/* Section header — journal entry mark */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, ease }}
-          className="mb-10 font-serif text-[64px] font-normal leading-[1.2] tracking-[-1px] text-white"
+          className="mb-20"
         >
-          Works
-        </motion.h2>
+          <p className="mb-4 flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.22em] text-[#C25430]">
+            <span className="h-px w-10 bg-[#C25430]/50" />
+            From My Desk
+          </p>
+          <h2 className="font-serif text-[64px] font-normal leading-[1.0] tracking-[-1.8px] text-[#2A2620] lg:text-[88px]">
+            Works
+          </h2>
+        </motion.div>
 
         <div className="flex flex-col gap-24 lg:gap-32">
           {projects.map((project, i) => {
             const imageFirst = i % 2 === 0;
             const isInternal = project.link.startsWith("/");
+            const projectNum = String(i + 1).padStart(2, "0");
+            const accent = projectAccents[i % projectAccents.length];
 
             const cardContent = (
               <div className={`flex flex-col lg:flex-row lg:items-center lg:gap-16 ${imageFirst ? "" : "lg:flex-row-reverse"}`}>
-                {/* Image with tag list */}
+                {/* Image side — image, washi tape, project stamp, and floating tag panel */}
                 <div className="relative lg:w-[55%] lg:flex-shrink-0" style={{ perspective: 800 }}>
                   <Perspective3DImage src={project.image} alt={project.title} imageFirst={imageFirst} />
+
+                  {/* Washi tape on top of image, varies side per project for rhythm */}
+                  <div
+                    className="absolute -top-3 z-30 h-[24px] w-[110px] shadow-[0_2px_4px_rgba(60,40,20,0.12)]"
+                    style={{
+                      left: imageFirst ? "44px" : "auto",
+                      right: imageFirst ? "auto" : "44px",
+                      transform: imageFirst ? "rotate(-4deg)" : "rotate(4deg)",
+                      background: `repeating-linear-gradient(45deg, ${accent.tape1} 0px, ${accent.tape1} 4px, ${accent.tape2} 4px, ${accent.tape2} 8px)`,
+                    }}
+                  />
+
+                  {/* Project number stamp — opposite corner from tape */}
+                  <div
+                    className="absolute -top-2 z-30 border bg-[#FAF6EB] px-2.5 py-1 shadow-[0_2px_8px_rgba(60,40,20,0.14)]"
+                    style={{
+                      right: imageFirst ? "-10px" : "auto",
+                      left: imageFirst ? "auto" : "-10px",
+                      transform: imageFirst ? "rotate(6deg)" : "rotate(-6deg)",
+                      borderColor: `${accent.stamp}66`,
+                    }}
+                  >
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em]" style={{ color: accent.stamp }}>
+                      No. {projectNum}
+                    </p>
+                  </div>
+
                   <ParallaxTags tags={project.tags} imageFirst={imageFirst} gradient={project.tagGradient} />
                 </div>
 
-                {/* Text content */}
-                <div className="mt-16 lg:mt-0 lg:flex-1">
-                  <p className="font-mono text-[13px] uppercase tracking-[0.15em] text-white/40">
+                {/* Text side — journal entry layout */}
+                <div className="relative mt-16 lg:mt-0 lg:flex-1">
+                  {/* Company + industry tag — chip-style with colored dot indicator */}
+                  <span
+                    className="inline-flex items-center gap-2 rounded-[3px] border px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.18em] backdrop-blur-sm"
+                    style={{
+                      borderColor: `${accent.stamp}55`,
+                      color: accent.stamp,
+                      background: `${accent.stamp}10`,
+                    }}
+                  >
+                    <span
+                      className="h-1.5 w-1.5 rounded-full"
+                      style={{ backgroundColor: accent.stamp }}
+                    />
                     {project.company}
-                  </p>
+                  </span>
 
-                  <h3 className="mt-2 font-serif text-[36px] font-normal leading-[1.2] tracking-[-0.5px] text-white lg:text-[42px]">
+                  <h3 className="mt-4 font-serif text-[32px] font-normal leading-[1.1] tracking-[-0.6px] text-[#2A2620] lg:text-[42px]">
                     {project.title}
                   </h3>
 
-                  <p className="mt-2 font-mono text-[13px] tracking-[0.05em] text-white/35">
+                  {/* Thin rule separating title from meta */}
+                  <span className="mt-5 block h-px w-12 bg-[#A89E8C]/40" />
+
+                  <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#A89E8C]">
                     {project.date}
                   </p>
 
-                  <p className="mt-2 font-sans text-[17px] leading-[1.7] tracking-[-0.17px] text-white/70 lg:text-[20px]">
-                    {project.description}
+                  {/* Description — vertical hairline on the left, marginalia feel */}
+                  <div className="mt-6 border-l border-[#A89E8C]/30 pl-5">
+                    <p className="font-sans text-[15px] leading-[1.75] tracking-[-0.15px] text-[#6B6358] lg:text-[17px]">
+                      {project.description}
+                    </p>
+                  </div>
+
+                  {/* Read-more affordance — terra cotta with growing dash */}
+                  <p className="mt-7 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-[#C25430] transition-all duration-300 group-hover:gap-3">
+                    <span className="h-px w-6 bg-[#C25430]/55 transition-all duration-300 group-hover:w-12" />
+                    open the page
                   </p>
                 </div>
               </div>
             );
 
             return (
-              <motion.div
-                key={project.title}
-                custom={i}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.7, delay: i * 0.1, ease }}
-              >
-                {isInternal ? (
-                  <TransitionLink href={project.link} data-cursor="look" className="group block no-underline">
-                    {cardContent}
-                  </TransitionLink>
-                ) : (
-                  <a href={project.link} data-cursor="look" className="group block no-underline">
-                    {cardContent}
-                  </a>
-                )}
-              </motion.div>
+              <React.Fragment key={project.title}>
+                <motion.div
+                  custom={i}
+                  initial={{ opacity: 0, y: 60, x: imageFirst ? -16 : 16 }}
+                  whileInView={{ opacity: 1, y: 0, x: 0 }}
+                  viewport={{ once: true, margin: "-120px" }}
+                  transition={{ duration: 0.85, delay: i * 0.05, ease }}
+                >
+                  {isInternal ? (
+                    <TransitionLink href={project.link} data-cursor="look" className="group block no-underline">
+                      {cardContent}
+                    </TransitionLink>
+                  ) : (
+                    <a href={project.link} data-cursor="look" className="group block no-underline">
+                      {cardContent}
+                    </a>
+                  )}
+                </motion.div>
+
+              </React.Fragment>
             );
           })}
         </div>

@@ -112,7 +112,6 @@ export default function Playground() {
     <section
       id="playground"
       className="relative px-6 py-24 sm:px-8 md:py-32 lg:px-16"
-      style={{ background: "#F9F7F3" }}
     >
       {/* Subtle paper grain */}
       <div
@@ -131,24 +130,19 @@ export default function Playground() {
 
       <div className="relative z-10 mx-auto max-w-[1200px]">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, ease }}
-          className="mb-16 max-w-[680px]"
+          className="mb-20"
         >
-          <p className="mb-3 font-mono text-[12px] uppercase tracking-[0.18em] text-[#c25430]">
+          <p className="mb-4 flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.22em] text-[#C25430]">
+            <span className="h-px w-10 bg-[#C25430]/50" />
+            Side Quests
+          </p>
+          <h2 className="font-serif text-[64px] font-normal leading-[1.0] tracking-[-1.8px] text-[#2A2620] lg:text-[88px]">
             Playground
-          </p>
-          <h2 className="font-serif text-[36px] font-normal leading-[1.1] tracking-[-0.6px] text-gray-900 lg:text-[44px]">
-            Side projects, experiments,
-            <br />
-            and things I made for fun.
           </h2>
-          <p className="mt-5 font-sans text-[15px] leading-[1.7] text-gray-500 lg:text-[16px]">
-            Vibe-coded prototypes, XR, games, textiles, 3D arts, programming arts.
-            More on the way — this corner grows.
-          </p>
         </motion.div>
 
         {/* Polaroid wall — 2/3/4 cols, generous gap so tilted cards breathe */}
